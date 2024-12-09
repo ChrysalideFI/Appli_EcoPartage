@@ -8,9 +8,9 @@ namespace Appli_EcoPartage.Data
         [Key]
         public int IdAnnonce { get; set; }
         [Required]
-        public string? Titre { get; set; }
+        public required string Titre { get; set; }
         [Required]
-        public string? Description { get; set; }
+        public required string Description { get; set; }
         public int Points { get; set; }
         public DateTime Date { get; set; }
         public bool Active { get; set; }
@@ -18,6 +18,6 @@ namespace Appli_EcoPartage.Data
         [ForeignKey("User")]
         public int IdUser { get; set; }
         [Required]
-        public virtual Users? User { get; set; }
+        public required virtual Users User { get; set; }
     }
 }

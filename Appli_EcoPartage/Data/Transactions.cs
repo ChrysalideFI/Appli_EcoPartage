@@ -13,19 +13,19 @@ namespace Appli_EcoPartage.Data
 
         [ForeignKey("UserGiver")]
         public int UserIdGiver { get; set; }
-        public virtual Users? UserGiver { get; set; }
+        public required virtual Users UserGiver { get; set; }
 
         [ForeignKey("UserRecipient")]
         public int UserIdRecipient { get; set; }
-        public virtual Users? UserRecipient { get; set; }
+        public required virtual Users UserRecipient { get; set; }
 
         [ForeignKey("Annonce")]
         public int IdAnnonce { get; set; }
-        public virtual Annonces? Annonce { get; set; }
+        public required virtual Annonces Annonce { get; set; }
 
         [ForeignKey("AnnoncePoints")]
         public int AnnoncePoint { get; set; }
-        public virtual Annonces? AnnoncePoints { get; set; }
+        public required virtual Annonces AnnoncePoints { get; set; }
 
         [Required]
         public DateTime DateTransaction { get; set; }

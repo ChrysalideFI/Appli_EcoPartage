@@ -4,6 +4,7 @@ using Appli_EcoPartage.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Appli_EcoPartage.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241209151823_AddPointsInUsers")]
+    partial class AddPointsInUsers
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -89,14 +92,14 @@ namespace Appli_EcoPartage.Data.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("IdUserGiven")
+                    b.Property<int?>("IdUserGiven")
+                        .IsRequired()
                         .HasColumnType("int");
 
-                    b.Property<int>("IdUserRecipient")
+                    b.Property<int?>("IdUserRecipient")
                         .HasColumnType("int");
 
                     b.Property<string>("Notice")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("IdComment");
@@ -433,8 +436,7 @@ namespace Appli_EcoPartage.Data.Migrations
                     b.HasOne("Appli_EcoPartage.Data.Users", "Recipient")
                         .WithMany("CommentsRecived")
                         .HasForeignKey("IdUserRecipient")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Giver");
 

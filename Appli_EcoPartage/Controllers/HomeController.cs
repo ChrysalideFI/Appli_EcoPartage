@@ -41,7 +41,10 @@ namespace Appli_EcoPartage.Controllers
             }
             var userId = int.Parse(userIdClaim.Value);
 
-            var user = _dbContext.Users.FirstOrDefault(u => u.Id == userId);
+            var user = _dbContext.Users
+                .Include(u => u.CommentsRecived)
+                .ThenInclude(c => c.Giver)
+                .FirstOrDefault(u => u.Id == userId);
 
             if (user == null) {
                 return RedirectToAction("Error");
@@ -51,7 +54,14 @@ namespace Appli_EcoPartage.Controllers
             {
                 Id = user.Id,
                 UserName = user.UserName,
-                Email = user.Email
+                Email = user.Email,
+                Points = user.Points,
+                Comments = user.CommentsRecived.Select(c => new UserCommentDisplayModel
+                {
+                    GiverUserName = c.Giver?.UserName ?? "Anonymous",
+                    Notice = c.Notice,
+                    Date = c.Date
+                }).ToList()
             };
 
 

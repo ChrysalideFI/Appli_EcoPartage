@@ -3,3 +3,23 @@
 <h1>Welcome, @Model.UserName!</h1>
 
 <p><strong>Email:</strong> @Model.Email</p>
+<p><strong>Points:</strong> @Model.Points</p>
+
+<h3>Comments Received</h3>
+@if (Model.Comments.Any())
+{
+    <ul>
+        @foreach (var comment in Model.Comments)
+        {
+            <li>
+                <p><strong>From:</strong> @comment.GiverUserName</p>
+                <p><strong>Date:</strong> @comment.Date.ToString("yyyy-MM-dd HH:mm")</p>
+                <p>@comment.Notice</p>
+            </li>
+        }
+    </ul>
+}
+else
+{
+    <p>No comments received yet.</p>
+}
