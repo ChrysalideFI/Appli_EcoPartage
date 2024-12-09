@@ -1,4 +1,5 @@
 ﻿using Appli_EcoPartage.Data;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
@@ -6,7 +7,7 @@ using System.Reflection.Metadata;
 
 namespace Appli_EcoPartage.Data
 {
-    public class ApplicationDbContext : IdentityDbContext
+    public class ApplicationDbContext : IdentityDbContext<Users, IdentityRole<int>, int>
     {
         public DbSet<Annonces>? Annonces { get; set; }
         public DbSet<Comments>? Comments { get; set; }

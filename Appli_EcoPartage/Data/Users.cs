@@ -11,7 +11,6 @@ namespace Appli_EcoPartage.Data
         public Users() : base()
         {
         }
-        public required string Role { get; set; }
         public virtual ICollection<Comments>? CommentsGiven { get; set; }
         public virtual ICollection<Comments>? CommentsRecived { get; set; }
 
