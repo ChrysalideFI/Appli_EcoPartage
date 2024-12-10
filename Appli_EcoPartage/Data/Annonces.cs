@@ -19,5 +19,8 @@ namespace Appli_EcoPartage.Data
         public int IdUser { get; set; }
         [Required]
         public required virtual Users User { get; set; }
+
+        public required virtual ICollection<AnnoncesTags> AnnoncesTags { get; set; }
+        public required virtual ICollection<GeographicalSector> GeographicalSectors { get; set; } 
     }
 }

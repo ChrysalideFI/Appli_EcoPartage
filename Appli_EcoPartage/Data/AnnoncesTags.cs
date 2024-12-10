@@ -11,9 +11,9 @@ namespace Appli_EcoPartage.Data
         public int IdAnnonceTag { get; set; }
         [ForeignKey("Tag")]
         public int IdTag { get; set; }
-        public virtual Tags? Tag { get; set; }
+        public required virtual Tags Tag { get; set; }
         [ForeignKey("Annonce")]
         public int IdAnnonce { get; set; }
-        public virtual Annonces? Annonce { get; set; }
+        public required virtual Annonces Annonce { get; set; }
     }
 }

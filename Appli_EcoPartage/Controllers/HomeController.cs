@@ -31,7 +31,7 @@ namespace Appli_EcoPartage.Controllers
         }
 
         [Authorize]
-        public IActionResult Profile()
+        public IActionResult Profile(int page = 1, int pageSize = 10)
         {
             var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
             if (userIdClaim == null)
@@ -50,20 +50,28 @@ namespace Appli_EcoPartage.Controllers
                 return RedirectToAction("Error");
             }
 
+            var totalComments = user.CommentsRecived.Count;
+            var comments = user.CommentsRecived
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(c => new UserCommentDisplayModel
+                {
+                    GiverUserName = c.Giver?.UserName ?? "Anonymous",
+                    Notice = c.Notice,
+                    Date = c.Date
+                }).ToList();
+
             var viewModel = new UserViewModel
             {
                 Id = user.Id,
                 UserName = user.UserName,
                 Email = user.Email,
                 Points = user.Points,
-                Comments = user.CommentsRecived.Select(c => new UserCommentDisplayModel
-                {
-                    GiverUserName = c.Giver?.UserName ?? "Anonymous",
-                    Notice = c.Notice,
-                    Date = c.Date
-                }).ToList()
+                Comments = comments
             };
 
+            ViewBag.TotalPages = (int)Math.Ceiling((double)totalComments / pageSize);
+            ViewBag.CurrentPage = page;
 
             return View(viewModel);
         }

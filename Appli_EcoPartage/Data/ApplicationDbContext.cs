@@ -9,12 +9,12 @@ namespace Appli_EcoPartage.Data
 {
     public class ApplicationDbContext : IdentityDbContext<Users, IdentityRole<int>, int>
     {
-        public DbSet<Annonces>? Annonces { get; set; }
-        public DbSet<Comments>? Comments { get; set; }
-        public DbSet<Transactions>? Transactions { get; set; }
-        public DbSet<Tags>? Tags { get; set; }
-        public DbSet<AnnoncesTags>? AnnoncesTags { get; set; }
-        public DbSet<GeographicalSector>? GeographicalSectors { get; set; }
+        public DbSet<Annonces> Annonces { get; set; }
+        public DbSet<Comments> Comments { get; set; }
+        public DbSet<Transactions> Transactions { get; set; }
+        public DbSet<Tags> Tags { get; set; }
+        public DbSet<AnnoncesTags> AnnoncesTags { get; set; }
+        public DbSet<GeographicalSector> GeographicalSectors { get; set; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
@@ -44,8 +44,15 @@ namespace Appli_EcoPartage.Data
             modelBuilder.Entity<AnnoncesTags>()
             .HasKey(t => new { t.IdAnnonce, t.IdTag });
 
+            // Configuration des relations pour GeographicalSector
             modelBuilder.Entity<GeographicalSector>()
-                .HasKey(t => t.IdGeographicalSector);
+                .HasKey(gs => new { gs.IdAnnonce, gs.IdGeographicalSector });
+
+            modelBuilder.Entity<GeographicalSector>()
+                .HasOne(gs => gs.Annonce)
+                .WithMany(a => a.GeographicalSectors)
+                .HasForeignKey(gs => gs.IdAnnonce)
+                .OnDelete(DeleteBehavior.Restrict);
 
             // Configuration des relations pour Transactions
             modelBuilder.Entity<Transactions>()
