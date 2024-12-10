@@ -1,45 +1,30 @@
 ﻿using Appli_EcoPartage.Data;
 using Appli_EcoPartage.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Appli_EcoPartage.Controllers
 {
-    public class ListAnnonceController : Controller
+    public class ListeFilmsController : Controller
     {
-        private readonly ApplicationDbContext _dbContext;
+        private readonly ApplicationDbContext _contexte;
+        private readonly UserManager<Users> _gestionnaire;
 
-        public ListAnnonceController(ApplicationDbContext dbContext)
+        public ListeFilmsController(ApplicationDbContext contexte,
+           UserManager<Users> gestionnaire)
         {
-            _dbContext = dbContext;
+            _contexte = contexte;
+            _gestionnaire = gestionnaire;
         }
-        public IActionResult Index(int id)
+        private Task<Users> GetCurrentUserAsync() =>
+           _gestionnaire.GetUserAsync(HttpContext.User);
+
+        [HttpGet]
+        public async Task<int> RecupererIdUtilisateurCourant()
         {
-            var annonce = _dbContext.Annonces
-                .Include(a => a.AnnoncesTags)
-                    .ThenInclude(at => at.Tag)
-                .Include(a => a.GeographicalSectors)
-                .Include(a => a.User)
-                .FirstOrDefault(a => a.IdAnnonce == id);
-
-            if (annonce == null)
-            {
-                return NotFound("Annonce not found.");
-            }
-
-            var viewModel = new AnnonceViewModel
-            {
-                IdAnnonce = annonce.IdAnnonce,
-                Titre = annonce.Titre,
-                Description = annonce.Description,
-                Date = annonce.Date,
-                IsActive = annonce.Active,
-                UserName = annonce.User?.UserName ?? "Unknown User",
-                Tags = annonce.AnnoncesTags.Select(at => at.Tag.CategoryName).ToList(),
-                GeographicalSectors = annonce.GeographicalSectors.Select(gs => gs.FirstPlace.ToString()).ToList()
-            };
-
-            return View(viewModel);
+            Users utilisateur = await GetCurrentUserAsync();
+            return utilisateur.Id;
         }
     }
 }
