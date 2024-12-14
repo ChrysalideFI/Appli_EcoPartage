@@ -176,6 +176,13 @@ namespace Appli_EcoPartage.Controllers
                 return NotFound();
             }
 
+            var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (currentUserId == null || annonces.IdUser.ToString() != currentUserId)
+            {
+                RedirectToAction("AccessDenied");
+            }
+
+
             ViewBag.Tags = new MultiSelectList(_context.Tags, "IdTag", "CategoryName", annonces.AnnoncesTags.Select(at => at.IdTag));
             ViewBag.Sectors = new MultiSelectList(_context.GeographicalSectors, "IdGeographicalSector", "Place", annonces.AnnoncesGeoSectors.Select(ags => ags.IdGeographicalSector));
             ViewData["IdUser"] = new SelectList(_context.Users, "Id", "Id", annonces.IdUser);
@@ -203,6 +210,13 @@ namespace Appli_EcoPartage.Controllers
                 {
                     _context.Update(annonces);
                     await _context.SaveChangesAsync();
+
+                    var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+                    var existingAnnonce = await _context.Annonces.AsNoTracking().FirstOrDefaultAsync(a => a.IdAnnonce == id);
+                    if (existingAnnonce == null || currentUserId == null || existingAnnonce.IdUser.ToString() != currentUserId)
+                    {
+                        RedirectToAction("AccessDenied");
+                    }
 
                     var existingTags = _context.AnnoncesTags.Where(at => at.IdAnnonce == annonces.IdAnnonce).ToList();
                     _context.AnnoncesTags.RemoveRange(existingTags); 
@@ -281,6 +295,12 @@ namespace Appli_EcoPartage.Controllers
                 return NotFound();
             }
 
+            var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (currentUserId == null || annonces.IdUser.ToString() != currentUserId)
+            {
+                RedirectToAction("AccessDenied");
+            }
+
             return View(annonces);
         }
 
@@ -293,6 +313,14 @@ namespace Appli_EcoPartage.Controllers
                 .Include(a => a.AnnoncesTags)
                 .Include(a => a.AnnoncesGeoSectors)
                 .FirstOrDefaultAsync(a => a.IdAnnonce == id);
+
+            var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            var existingAnnonce = await _context.Annonces.AsNoTracking().FirstOrDefaultAsync(a => a.IdAnnonce == id);
+            if (existingAnnonce == null || currentUserId == null || existingAnnonce.IdUser.ToString() != currentUserId)
+            {
+                RedirectToAction("AccessDenied");
+            }
+
             if (annonces != null)
             {
                 if (annonces.AnnoncesTags != null)
