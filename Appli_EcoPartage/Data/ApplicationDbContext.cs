@@ -15,6 +15,7 @@ namespace Appli_EcoPartage.Data
         public DbSet<Tags> Tags { get; set; }
         public DbSet<AnnoncesTags> AnnoncesTags { get; set; }
         public DbSet<GeographicalSector> GeographicalSectors { get; set; }
+        public DbSet<AnnoncesGeoSector> AnnoncesGeoSectors { get; set; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
@@ -26,6 +27,21 @@ namespace Appli_EcoPartage.Data
 
             modelBuilder.Entity<Annonces>()
                 .HasKey(t => t.IdAnnonce);
+
+
+            modelBuilder.Entity<Tags>()
+                .HasKey(t => t.IdTag);
+
+            modelBuilder.Entity<GeographicalSector>()
+                .HasKey(t => t.IdGeographicalSector);
+
+            // Configuration des relations pour AnnoncesTags
+            modelBuilder.Entity<AnnoncesTags>()
+            .HasKey(t => new { t.IdAnnonce, t.IdTag, t.IdAnnonceTag });
+
+            // Configuration des relations pour AnnonceGeoSector
+            modelBuilder.Entity<AnnoncesGeoSector>()
+            .HasKey(t => new { t.IdAnnonce, t.IdGeographicalSector, t.IdAnnoncesGeoSector });
 
             // Configuration des relations pour Comments
             modelBuilder.Entity<Comments>()
@@ -40,18 +56,23 @@ namespace Appli_EcoPartage.Data
                 .HasForeignKey(c => c.IdUserRecipient)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // Configuration des relations pour AnnoncesTags
-            modelBuilder.Entity<AnnoncesTags>()
-            .HasKey(t => new { t.IdAnnonce, t.IdTag });
+            // Configuration des relations pour Annonces
+            modelBuilder.Entity<Annonces>()
+                .HasOne(a => a.User)
+                .WithMany(u => u.MyAnnonces)
+                .HasForeignKey(a => a.IdUser)
+                .OnDelete(DeleteBehavior.Restrict);
 
-            // Configuration des relations pour GeographicalSector
-            modelBuilder.Entity<GeographicalSector>()
-                .HasKey(gs => new { gs.IdAnnonce, gs.IdGeographicalSector });
+            modelBuilder.Entity<Annonces>()
+                .HasMany(a => a.AnnoncesTags)
+                .WithOne(at => at.Annonce)
+                .HasForeignKey(at => at.IdAnnonce)
+                .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<GeographicalSector>()
-                .HasOne(gs => gs.Annonce)
-                .WithMany(a => a.GeographicalSectors)
-                .HasForeignKey(gs => gs.IdAnnonce)
+            modelBuilder.Entity<Annonces>()
+                .HasMany(a => a.AnnoncesGeoSectors)
+                .WithOne(ag => ag.Annonce)
+                .HasForeignKey(ag => ag.IdAnnonce)
                 .OnDelete(DeleteBehavior.Restrict);
 
             // Configuration des relations pour Transactions
@@ -79,9 +100,6 @@ namespace Appli_EcoPartage.Data
                 .HasForeignKey(t => t.AnnoncePoint)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<Tags>()
-                .HasKey(t => t.IdTag);
-
             modelBuilder.Entity<Users>()
                .HasMany(u => u.CommentsGiven)
                .WithOne(c => c.Giver)
@@ -92,6 +110,12 @@ namespace Appli_EcoPartage.Data
                 .HasMany(u => u.CommentsRecived)
                 .WithOne(c => c.Recipient)
                 .HasForeignKey(c => c.IdUserRecipient)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Users>()
+                .HasMany(u => u.MyAnnonces)
+                .WithOne(a => a.User)
+                .HasForeignKey(a => a.IdUser)
                 .OnDelete(DeleteBehavior.Restrict);
         }
     }

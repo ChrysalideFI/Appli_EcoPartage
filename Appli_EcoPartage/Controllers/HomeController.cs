@@ -41,7 +41,7 @@ namespace Appli_EcoPartage.Controllers
             var user = _dbContext.Users
                 .Include(u => u.CommentsRecived)
                 .ThenInclude(c => c.Giver)
-                .Include(u => u.MesAnnonces)
+                .Include(u => u.MyAnnonces)
                 .FirstOrDefault(u => u.Id == userId);
 
             if (user == null)
@@ -60,8 +60,8 @@ namespace Appli_EcoPartage.Controllers
                     Date = c.Date
                 }).ToList();
 
-            var totalMesAnnonces = user.MesAnnonces.Count;
-            var annonces = user.MesAnnonces
+            var totalMesAnnonces = user.MyAnnonces.Count;
+            var annonces = user.MyAnnonces
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .Select(a => new UserAnnonceDisplayModel
@@ -133,7 +133,7 @@ namespace Appli_EcoPartage.Controllers
             var userId = int.Parse(userIdClaim.Value);
 
             var user = _dbContext.Users
-                .Include(u => u.MesAnnonces)
+                .Include(u => u.MyAnnonces)
                 .FirstOrDefault(u => u.Id == userId);
 
             if (user == null)
@@ -141,7 +141,7 @@ namespace Appli_EcoPartage.Controllers
                 return BadRequest("User not found.");
             }
 
-            var annonces = user.MesAnnonces
+            var annonces = user.MyAnnonces
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .Select(a => new UserAnnonceDisplayModel

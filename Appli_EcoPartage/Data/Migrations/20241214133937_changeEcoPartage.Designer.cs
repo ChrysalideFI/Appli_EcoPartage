@@ -4,6 +4,7 @@ using Appli_EcoPartage.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Appli_EcoPartage.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241214133937_changeEcoPartage")]
+    partial class changeEcoPartage
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -71,7 +74,7 @@ namespace Appli_EcoPartage.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdAnnoncesGeoSector"));
 
-                    b.HasKey("IdAnnonce", "IdGeographicalSector", "IdAnnoncesGeoSector");
+                    b.HasKey("IdAnnonce", "IdGeographicalSector");
 
                     b.HasIndex("IdGeographicalSector");
 
@@ -92,7 +95,7 @@ namespace Appli_EcoPartage.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdAnnonceTag"));
 
-                    b.HasKey("IdAnnonce", "IdTag", "IdAnnonceTag");
+                    b.HasKey("IdAnnonce", "IdTag");
 
                     b.HasIndex("IdTag");
 
@@ -137,9 +140,8 @@ namespace Appli_EcoPartage.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdGeographicalSector"));
 
-                    b.Property<string>("Place")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Place")
+                        .HasColumnType("int");
 
                     b.HasKey("IdGeographicalSector");
 

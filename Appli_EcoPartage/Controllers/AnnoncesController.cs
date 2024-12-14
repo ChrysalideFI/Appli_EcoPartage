@@ -47,8 +47,22 @@ namespace Appli_EcoPartage.Controllers
         // GET: Annonces/Create
         public IActionResult Create()
         {
-            ViewData["IdUser"] = new SelectList(_context.Users, "Id", "Id");
+            var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(currentUserId))
+            {
+                return Unauthorized();
+            }
+
+            ViewBag.IdUser = new SelectList(
+                 _context.Users.Where(u => u.Id.ToString() == currentUserId),
+                 "Id",
+                 "Id",
+                 currentUserId
+             );
+
             ViewBag.Tags = new SelectList(_context.Tags, "IdTag", "CategoryName");
+            ViewBag.Sectors = new SelectList(_context.GeographicalSectors, "IdGeographicalSector", "Place");
             return View();
         }
 
@@ -60,8 +74,20 @@ namespace Appli_EcoPartage.Controllers
         public async Task<IActionResult> Create(
             [Bind("IdAnnonce,Titre,Description,Points,Date,Active,IdUser")] Annonces annonces,
             List<int> selectedTags,
-            List<string> geographicalSectors)
+            List<int> selectedSectors)
         {
+            var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(currentUserId)) {
+                return Unauthorized();
+            }
+
+            annonces.IdUser = int.Parse(currentUserId);
+
+            if (string.IsNullOrEmpty(currentUserId))
+            {
+                return Unauthorized();
+            }
+
             if (ModelState.IsValid)
             {
                 _context.Add(annonces);
@@ -82,24 +108,45 @@ namespace Appli_EcoPartage.Controllers
                     }
                 }
 
-                if (geographicalSectors != null && geographicalSectors.Any())
+                if (selectedSectors != null && selectedSectors.Any())
                 {
-                    foreach (var sector in geographicalSectors)
+                    foreach (var sectorid in selectedSectors)
                     {
-                        var geographicalSector = new GeographicalSector
+                        var annonceGeoSector = new AnnoncesGeoSector
                         {
                             IdAnnonce = annonces.IdAnnonce,
+                            IdGeographicalSector = sectorid,
                             Annonce = annonces,
-                            FirstPlace = int.Parse(sector) // Assuming sector is a string that can be parsed to an int
+                            GeographicalSector = await _context.GeographicalSectors.FindAsync(sectorid) ?? throw new InvalidOperationException("Sector not found")
                         };
-                        _context.GeographicalSectors.Add(geographicalSector);
+                        _context.AnnoncesGeoSectors.Add(annonceGeoSector);
                     }
                 }
 
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdUser"] = new SelectList(_context.Users, "Id", "Id", annonces.IdUser);
+
+            if (!ModelState.IsValid)
+            {
+                foreach (var state in ModelState)
+                {
+                    Console.WriteLine($"Key: {state.Key}");
+                    foreach (var error in state.Value.Errors)
+                    {
+                        Console.WriteLine($"Error: {error.ErrorMessage}");
+                    }
+                }
+            }
+
+            ViewBag.IdUser = new SelectList(
+                _context.Users.Where(u => u.Id.ToString() == currentUserId),
+                "Id",
+                "Id",
+                annonces.IdUser
+            );
+            ViewBag.Tags = new SelectList(_context.Tags, "IdTag", "CategoryName");
+            ViewBag.Sectors = new SelectList(_context.GeographicalSectors, "IdGeographicalSector", "Place");
 
             return View(annonces);
         }
