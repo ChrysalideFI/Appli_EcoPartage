@@ -1,0 +1,20 @@
+﻿@model List<UserCommentDisplayModel>
+
+@if (Model.Any())
+{
+    <ul>
+        @foreach (var comment in Model)
+        {
+            <li>
+                <p><strong>From:</strong> @comment.GiverUserName</p>
+                <p><strong>Date:</strong> @comment.Date.ToString("yyyy-MM-dd HH:mm")</p>
+                <p>@comment.Notice</p>
+            </li>
+        }
+    </ul>
+}
+else
+{
+    <p>No comments received yet.</p>
+}
+

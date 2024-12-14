@@ -100,6 +100,7 @@ namespace Appli_EcoPartage.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["IdUser"] = new SelectList(_context.Users, "Id", "Id", annonces.IdUser);
+
             return View(annonces);
         }
 

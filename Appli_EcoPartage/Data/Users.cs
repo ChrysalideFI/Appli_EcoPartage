@@ -14,6 +14,8 @@ namespace Appli_EcoPartage.Data
         public int Points { get; set; }
         public required virtual ICollection<Comments> CommentsGiven { get; set; }
         public required virtual ICollection<Comments> CommentsRecived { get; set; }
+        
+        public required virtual ICollection<Annonces> MesAnnonces { get; set; }
 
         //public virtual ICollection<Transactions>? TransactionsGiven { get; set; }
         //public virtual ICollection<Transactions>? TransactionsRecived { get; set; }

@@ -1,0 +1,23 @@
+﻿@model List<UserAnnonceDisplayModel>
+
+@if (Model.Any())
+{
+    <ul>
+        @foreach (var annonce in Model)
+        {
+            <li>
+                <h3>@annonce.Titre</h3>
+                <p>@annonce.Description</p>
+                <p>Points: @annonce.Points</p>
+                <p>Date: @annonce.Date.ToString("yyyy-MM-dd HH:mm")</p>
+                <p>Active: @annonce.IsActive</p>
+            </li>
+        }
+    </ul>
+}
+else
+{
+    <p>No annonces yet.</p>
+}
+
+
