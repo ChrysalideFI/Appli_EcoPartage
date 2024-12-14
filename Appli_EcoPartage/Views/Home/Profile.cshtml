@@ -7,7 +7,7 @@
 
 <div>
     <button id="Comments">Comments</button>
-    <button id="MesAnnonces">Mes Annonces</button>
+    <button id="MyAnnonces">My Annonces</button>
 </div>
 
 <div id="commentsContainer" style="display:none;">
@@ -30,7 +30,7 @@
                 });
             });
 
-            $('#MesAnnonces').click(function () {
+            $('#MyAnnonces').click(function () {
                 $('#annoncesContainer').show();
                 $('#commentsContainer').hide();
                 $.get('@Url.Action("LoadAnnonces", "Home")', function (data) {
