@@ -56,7 +56,7 @@ namespace Appli_EcoPartage.Controllers
 
             if (string.IsNullOrEmpty(currentUserId))
             {
-                return Unauthorized();
+                return RedirectToAction("AccessDenied");
             }
 
             ViewBag.IdUser = new SelectList(
@@ -83,14 +83,14 @@ namespace Appli_EcoPartage.Controllers
         {
             var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(currentUserId)) {
-                return Unauthorized();
+                return RedirectToAction("AccessDenied");
             }
 
             annonces.IdUser = int.Parse(currentUserId);
 
             if (string.IsNullOrEmpty(currentUserId))
             {
-                return Unauthorized();
+                return RedirectToAction("AccessDenied");
             }
 
             if (ModelState.IsValid)
@@ -132,18 +132,6 @@ namespace Appli_EcoPartage.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            if (!ModelState.IsValid)
-            {
-                foreach (var state in ModelState)
-                {
-                    Console.WriteLine($"Key: {state.Key}");
-                    foreach (var error in state.Value.Errors)
-                    {
-                        Console.WriteLine($"Error: {error.ErrorMessage}");
-                    }
-                }
-            }
-
             ViewBag.IdUser = new SelectList(
                 _context.Users.Where(u => u.Id.ToString() == currentUserId),
                 "Id",
@@ -179,7 +167,7 @@ namespace Appli_EcoPartage.Controllers
             var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
             if (currentUserId == null || annonces.IdUser.ToString() != currentUserId)
             {
-                RedirectToAction("AccessDenied");
+                return RedirectToAction("AccessDenied");
             }
 
 
@@ -215,7 +203,7 @@ namespace Appli_EcoPartage.Controllers
                     var existingAnnonce = await _context.Annonces.AsNoTracking().FirstOrDefaultAsync(a => a.IdAnnonce == id);
                     if (existingAnnonce == null || currentUserId == null || existingAnnonce.IdUser.ToString() != currentUserId)
                     {
-                        RedirectToAction("AccessDenied");
+                        return RedirectToAction("AccessDenied");
                     }
 
                     var existingTags = _context.AnnoncesTags.Where(at => at.IdAnnonce == annonces.IdAnnonce).ToList();
@@ -298,7 +286,7 @@ namespace Appli_EcoPartage.Controllers
             var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
             if (currentUserId == null || annonces.IdUser.ToString() != currentUserId)
             {
-                RedirectToAction("AccessDenied");
+                return RedirectToAction("AccessDenied");
             }
 
             return View(annonces);
@@ -318,7 +306,7 @@ namespace Appli_EcoPartage.Controllers
             var existingAnnonce = await _context.Annonces.AsNoTracking().FirstOrDefaultAsync(a => a.IdAnnonce == id);
             if (existingAnnonce == null || currentUserId == null || existingAnnonce.IdUser.ToString() != currentUserId)
             {
-                RedirectToAction("AccessDenied");
+                return RedirectToAction("AccessDenied");
             }
 
             if (annonces != null)
