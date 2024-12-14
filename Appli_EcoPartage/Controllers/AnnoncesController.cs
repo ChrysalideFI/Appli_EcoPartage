@@ -34,8 +34,13 @@ namespace Appli_EcoPartage.Controllers
             }
 
             var annonces = await _context.Annonces
-                .Include(a => a.User)
-                .FirstOrDefaultAsync(m => m.IdAnnonce == id);
+            .Include(a => a.User)
+            .Include(a => a.AnnoncesTags)
+                .ThenInclude(at => at.Tag)
+            .Include(a => a.AnnoncesGeoSectors)
+                .ThenInclude(ags => ags.GeographicalSector)
+            .FirstOrDefaultAsync(m => m.IdAnnonce == id);
+
             if (annonces == null)
             {
                 return NotFound();
@@ -61,8 +66,8 @@ namespace Appli_EcoPartage.Controllers
                  currentUserId
              );
 
-            ViewBag.Tags = new SelectList(_context.Tags, "IdTag", "CategoryName");
-            ViewBag.Sectors = new SelectList(_context.GeographicalSectors, "IdGeographicalSector", "Place");
+            ViewBag.Tags = new MultiSelectList(_context.Tags, "IdTag", "CategoryName");
+            ViewBag.Sectors = new MultiSelectList(_context.GeographicalSectors, "IdGeographicalSector", "Place");
             return View();
         }
 
@@ -145,8 +150,8 @@ namespace Appli_EcoPartage.Controllers
                 "Id",
                 annonces.IdUser
             );
-            ViewBag.Tags = new SelectList(_context.Tags, "IdTag", "CategoryName");
-            ViewBag.Sectors = new SelectList(_context.GeographicalSectors, "IdGeographicalSector", "Place");
+            ViewBag.Tags = new MultiSelectList(_context.Tags, "IdTag", "CategoryName");
+            ViewBag.Sectors = new MultiSelectList(_context.GeographicalSectors, "IdGeographicalSector", "Place");
 
             return View(annonces);
         }
@@ -159,11 +164,20 @@ namespace Appli_EcoPartage.Controllers
                 return NotFound();
             }
 
-            var annonces = await _context.Annonces.FindAsync(id);
+            var annonces = await _context.Annonces
+                .Include(a => a.AnnoncesTags)
+                .ThenInclude(at => at.Tag)
+                .Include(a => a.AnnoncesGeoSectors)
+                .ThenInclude(ags => ags.GeographicalSector)
+                .FirstOrDefaultAsync(a => a.IdAnnonce == id);
+
             if (annonces == null)
             {
                 return NotFound();
             }
+
+            ViewBag.Tags = new MultiSelectList(_context.Tags, "IdTag", "CategoryName", annonces.AnnoncesTags.Select(at => at.IdTag));
+            ViewBag.Sectors = new MultiSelectList(_context.GeographicalSectors, "IdGeographicalSector", "Place", annonces.AnnoncesGeoSectors.Select(ags => ags.IdGeographicalSector));
             ViewData["IdUser"] = new SelectList(_context.Users, "Id", "Id", annonces.IdUser);
             return View(annonces);
         }
@@ -173,7 +187,10 @@ namespace Appli_EcoPartage.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdAnnonce,Titre,Description,Points,Date,Active,IdUser")] Annonces annonces)
+        public async Task<IActionResult> Edit(int id, 
+                                               [Bind("IdAnnonce,Titre,Description,Points,Date,Active,IdUser")] Annonces annonces, 
+                                               List<int> selectedTags,
+                                               List<int> selectedSectors)
         {
             if (id != annonces.IdAnnonce)
             {
@@ -185,6 +202,43 @@ namespace Appli_EcoPartage.Controllers
                 try
                 {
                     _context.Update(annonces);
+                    await _context.SaveChangesAsync();
+
+                    var existingTags = _context.AnnoncesTags.Where(at => at.IdAnnonce == annonces.IdAnnonce).ToList();
+                    _context.AnnoncesTags.RemoveRange(existingTags); 
+
+                    if (selectedTags != null && selectedTags.Any())
+                    {
+                        foreach (var tagId in selectedTags)
+                        {
+                            var annoncesTag = new AnnoncesTags
+                            {
+                                IdAnnonce = annonces.IdAnnonce,
+                                IdTag = tagId,
+                                Annonce = annonces,
+                                Tag = await _context.Tags.FindAsync(tagId) ?? throw new InvalidOperationException("Tag not found")
+                            };
+                            _context.AnnoncesTags.Add(annoncesTag);
+                        }
+                    }
+
+                    var existingSectors = _context.AnnoncesGeoSectors.Where(ags => ags.IdAnnonce == annonces.IdAnnonce).ToList();
+                    _context.AnnoncesGeoSectors.RemoveRange(existingSectors);
+                    if (selectedSectors != null && selectedSectors.Any())
+                    {
+                        foreach (var sectorid in selectedSectors)
+                        {
+                            var annonceGeoSector = new AnnoncesGeoSector
+                            {
+                                IdAnnonce = annonces.IdAnnonce,
+                                IdGeographicalSector = sectorid,
+                                Annonce = annonces,
+                                GeographicalSector = await _context.GeographicalSectors.FindAsync(sectorid) ?? throw new InvalidOperationException("Sector not found")
+                            };
+                            _context.AnnoncesGeoSectors.Add(annonceGeoSector);
+                        }
+                    }
+
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -200,6 +254,9 @@ namespace Appli_EcoPartage.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+
+            ViewBag.Tags = new MultiSelectList(_context.Tags, "IdTag", "CategoryName", selectedTags);
+            ViewBag.Sectors = new MultiSelectList(_context.GeographicalSectors, "IdGeographicalSector", "Place", selectedSectors);
             ViewData["IdUser"] = new SelectList(_context.Users, "Id", "Id", annonces.IdUser);
             return View(annonces);
         }
@@ -214,6 +271,10 @@ namespace Appli_EcoPartage.Controllers
 
             var annonces = await _context.Annonces
                 .Include(a => a.User)
+                .Include(a => a.AnnoncesTags)
+                    .ThenInclude(at => at.Tag)
+                .Include(a => a.AnnoncesGeoSectors)
+                    .ThenInclude(ags => ags.GeographicalSector)
                 .FirstOrDefaultAsync(m => m.IdAnnonce == id);
             if (annonces == null)
             {
@@ -228,9 +289,21 @@ namespace Appli_EcoPartage.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var annonces = await _context.Annonces.FindAsync(id);
+            var annonces = await _context.Annonces
+                .Include(a => a.AnnoncesTags)
+                .Include(a => a.AnnoncesGeoSectors)
+                .FirstOrDefaultAsync(a => a.IdAnnonce == id);
             if (annonces != null)
             {
+                if (annonces.AnnoncesTags != null)
+                {
+                    _context.AnnoncesTags.RemoveRange(annonces.AnnoncesTags);
+                }
+
+                if (annonces.AnnoncesGeoSectors != null)
+                {
+                    _context.AnnoncesGeoSectors.RemoveRange(annonces.AnnoncesGeoSectors);
+                }
                 _context.Annonces.Remove(annonces);
             }
 

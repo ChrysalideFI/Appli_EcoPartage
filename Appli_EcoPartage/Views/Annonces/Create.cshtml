@@ -44,11 +44,11 @@
             </div>
             <div class="form-group">
                 <label>Tags</label>
-                <select id="selectedTags" name="selectedTags" multiple class="form-control" asp-items="ViewBag.Tags"></select>
+                <select id="selectedTags" name="selectedTags[]" multiple class="form-control" asp-items="ViewBag.Tags"></select>
             </div>
             <div class="form-group">
                 <label>Geographical Sectors</label>
-                <select id="selectedSectors" name="selectedSectors" multiple class="form-control" asp-items="ViewBag.Sectors"></select>
+                <select id="selectedSectors" name="selectedSectors[]" multiple class="form-control" asp-items="ViewBag.Sectors"></select>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

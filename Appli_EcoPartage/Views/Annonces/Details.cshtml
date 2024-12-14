@@ -46,6 +46,28 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.User.Id)
         </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.AnnoncesTags)
+        </dt>
+        <dd class="col-sm-10">
+            @foreach (var item in Model.AnnoncesTags)
+            {
+                <div>
+                    @item.Tag.CategoryName
+                </div>
+            }
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.AnnoncesGeoSectors)
+        </dt>
+        <dd>
+            @foreach (var item in Model.AnnoncesGeoSectors)
+            {
+                <div>
+                    @item.GeographicalSector.Place
+                </div>
+            }
+        </dd>
     </dl>
 </div>
 <div>
