@@ -156,9 +156,9 @@ namespace Appli_EcoPartage.Controllers
                         return RedirectToAction("Details", "Transactions", new { id = transaction.IdTransaction });
                     }
 
-                    transaction.UserBuyer.Points -= transaction.Annonce.Points;
-                    transaction.UserSeller.Points += transaction.Annonce.Points;
-                    transaction.Status = "Accepted";
+                    /*transaction.UserBuyer.Points -= transaction.Annonce.Points;
+                    transaction.UserSeller.Points += transaction.Annonce.Points;*/
+                    transaction.Status = "In Progress";
                 }
                 else if (action == "Decline")
                 {
@@ -179,6 +179,54 @@ namespace Appli_EcoPartage.Controllers
 
             TempData["Success"] = "Transaction processed successfully.";
             return RedirectToAction("Index", "Transactions");
+        }
+
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CompleteTransaction(int id)
+        {
+            var transaction = await _context.Transactions
+                .Include(t => t.Annonce)
+                .Include(t => t.UserBuyer)
+                .Include(t => t.UserSeller)
+                .FirstOrDefaultAsync(t => t.IdTransaction == id);
+
+            if (transaction == null)
+            {
+                return NotFound();
+            }
+
+            // check if the user is the buyer
+            var buyerId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (transaction.UserIdBuyer.ToString() != buyerId)
+            {
+                return Unauthorized();
+            }
+
+            try
+            {
+                if (transaction.Status == "In Progress")
+                {
+                    transaction.UserBuyer.Points -= transaction.Annonce.Points;
+                    transaction.UserSeller.Points += transaction.Annonce.Points;
+                    transaction.Status = "Completed";
+                }
+                else
+                {
+                    return BadRequest("Transaction is not in progress.");
+                }
+
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error completing transaction: {ex.Message}");
+                return BadRequest("Failed to complete transaction.");
+            }
+
+            TempData["Success"] = "Transaction completed successfully.";
+            return RedirectToAction("Details", "Transactions");
         }
     }
 }

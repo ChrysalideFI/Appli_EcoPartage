@@ -1,5 +1,9 @@
 ﻿@model Appli_EcoPartage.Data.Transactions
 
+@{
+    ViewData["Title"] = "Transaction Details";
+}
+
 <div class="container mt-4">
     <h1>Transaction Details</h1>
 
@@ -35,13 +39,17 @@
                     {
                         <span class="badge bg-warning">Pending</span>
                     }
-                    else if (Model.Status == "Accepted")
+                    else if (Model.Status == "In progress")
                     {
-                        <span class="badge bg-success">Accepted</span>
+                        <span class="badge bg-success">In progress</span>
                     }
                     else if (Model.Status == "Declined")
                     {
                         <span class="badge bg-danger">Declined</span>
+                    }
+                    else if (Model.Status == "Completed")
+                    {
+                        <span class="badge bg-primary">Completed</span>
                     }
                 </td>
             </tr>
@@ -70,6 +78,32 @@
     {
         <p class="text-muted">This transaction has been processed.</p>
     }
+
+    @if (Model.Status == "In Progress" && Model.UserIdBuyer.ToString() == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value)
+    {
+        <form asp-action="CompleteTransaction" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="id" value="@Model.IdTransaction" />
+            <button type="submit" class="btn btn-primary">Complete Transaction</button>
+        </form>
+    }
+
+    @if (Model.Status == "Completed" && Model.UserIdBuyer.ToString() == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value)
+    {
+        <form asp-controller="Profile" asp-action="AddComment" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="RecipientId" value="@Model.UserIdSeller" />
+            <div class="form-group">
+                <label for="Notice">Comment</label>
+                <textarea name="Notice" class="form-control" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit Comment</button>
+        </form>
+    }
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
 </div>
 
 
