@@ -1,0 +1,34 @@
+﻿@model IEnumerable<Appli_EcoPartage.Data.Transactions>
+
+<h1>Your Transactions</h1>
+
+<table class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th>Annonce</th>
+            <th>Buyer</th>
+            <th>Seller</th>
+            <th>Points</th>
+            <th>Status</th>
+            <th>Date</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var transaction in Model)
+        {
+            <tr>
+                <td>@transaction.Annonce.Titre</td>
+                <td>@transaction.UserBuyer.UserName</td>
+                <td>@transaction.UserSeller.UserName</td>
+                <td>@transaction.Annonce.Points</td>
+                <td>@transaction.Status</td>
+                <td>@transaction.DateTransaction.ToString("yyyy-MM-dd HH:mm")</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@transaction.IdTransaction" class="btn btn-primary btn-sm">View</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+

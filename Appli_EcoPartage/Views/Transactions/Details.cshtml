@@ -1,19 +1,75 @@
 ﻿@model Appli_EcoPartage.Data.Transactions
 
-<h1>Transaction Details</h1>
-<p><strong>Annonce:</strong> @Model.Annonce.Titre</p>
-<p><strong>Buyer:</strong> @Model.UserBuyer.UserName</p>
-<p><strong>Seller:</strong> @Model.UserSeller.UserName</p>
-<p><strong>Date:</strong> @Model.DateTransaction.ToString("yyyy-MM-dd HH:mm")</p>
-<p><strong>Status:</strong> @Model.Status</p>
+<div class="container mt-4">
+    <h1>Transaction Details</h1>
 
-@if (Model.Status == "Pending" && Model.UserIdSeller.ToString() == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value)
-{
-    <form asp-action="ProcessTransaction" method="post">
-        @Html.AntiForgeryToken()
-        <input type="hidden" name="id" value="@Model.IdTransaction" />
-        <button name="action" value="Accept" class="btn btn-success">Accept</button>
-        <button name="action" value="Decline" class="btn btn-danger">Decline</button>
-    </form>
-}
+    @if (TempData["TransactionError"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["TransactionError"]
+        </div>
+    }
+
+    <table class="table table-bordered">
+        <tbody>
+            <tr>
+                <th>Annonce</th>
+                <td>@Model.Annonce.Titre</td>
+            </tr>
+            <tr>
+                <th>Buyer</th>
+                <td>@Model.UserBuyer.UserName</td>
+            </tr>
+            <tr>
+                <th>Seller</th>
+                <td>@Model.UserSeller.UserName</td>
+            </tr>
+            <tr>
+                <th>Points</th>
+                <td>@Model.Annonce.Points</td>
+            </tr>
+            <tr>
+                <th>Status</th>
+                <td>
+                    @if (Model.Status == "Pending")
+                    {
+                        <span class="badge bg-warning">Pending</span>
+                    }
+                    else if (Model.Status == "Accepted")
+                    {
+                        <span class="badge bg-success">Accepted</span>
+                    }
+                    else if (Model.Status == "Declined")
+                    {
+                        <span class="badge bg-danger">Declined</span>
+                    }
+                </td>
+            </tr>
+            <tr>
+                <th>Date</th>
+                <td>@Model.DateTransaction.ToString("yyyy-MM-dd HH:mm")</td>
+            </tr>
+        </tbody>
+    </table>
+
+    @if (Model.Status == "Pending" && Model.UserIdSeller.ToString() == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value)
+    {
+        <h3>Process Transaction</h3>
+        <form asp-controller="Transactions" asp-action="ProcessTransaction" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="id" value="@Model.IdTransaction" />
+            <button type="submit" name="action" value="Accept" class="btn btn-success">Accept</button>
+            <button type="submit" name="action" value="Decline" class="btn btn-danger">Decline</button>
+        </form>
+    }
+    else if (Model.Status == "Pending")
+    {
+        <p class="text-muted">This transaction is pending and waiting for the seller's decision.</p>
+    }
+    else
+    {
+        <p class="text-muted">This transaction has been processed.</p>
+    }
+</div>
+
 

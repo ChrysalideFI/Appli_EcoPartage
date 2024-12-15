@@ -17,6 +17,44 @@ namespace Appli_EcoPartage.Controllers
             _logger = logger;
         }
 
+        [Authorize]
+        public async Task<IActionResult> Index()
+        {
+            var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(currentUserId))
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            var transactions = await _context.Transactions
+                .Include(t => t.UserBuyer)
+                .Include(t => t.UserSeller)
+                .Include(t => t.Annonce)
+                .Where(t => t.UserIdBuyer.ToString() == currentUserId || t.UserIdSeller.ToString() == currentUserId)
+                .ToListAsync();
+
+            return View(transactions);
+        }
+
+        [Authorize]
+        public async Task<IActionResult> Details(int? id)
+        {
+            var transaction = await _context.Transactions
+                .Include(t => t.UserBuyer)
+                .Include(t => t.UserSeller)
+                .Include(t => t.Annonce)
+                .FirstOrDefaultAsync(t => t.IdTransaction == id);
+
+            if (transaction == null)
+            {
+                return NotFound();
+            }
+
+            return View(transaction);
+        }
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
@@ -81,7 +119,8 @@ namespace Appli_EcoPartage.Controllers
                 return BadRequest("Failed to save transaction.");
             }
 
-            return RedirectToAction("Details", new { id = transaction.IdTransaction });
+            TempData["Success"] = "Transaction created successfully.";
+            return RedirectToAction("Index", "Annonces");
         }
 
         [Authorize]
@@ -114,7 +153,7 @@ namespace Appli_EcoPartage.Controllers
                     if (transaction.UserBuyer.Points < transaction.Annonce.Points)
                     {
                         TempData["TransactionError"] = "Buyer's points are insufficient to complete the transaction.";
-                        return RedirectToAction("Details", new { id = transaction.IdTransaction });
+                        return RedirectToAction("Details", "Transactions", new { id = transaction.IdTransaction });
                     }
 
                     transaction.UserBuyer.Points -= transaction.Annonce.Points;
@@ -138,7 +177,8 @@ namespace Appli_EcoPartage.Controllers
                 return BadRequest("Failed to process transaction.");
             }
 
-            return RedirectToAction("Details", new { id = transaction.IdTransaction });
+            TempData["Success"] = "Transaction processed successfully.";
+            return RedirectToAction("Index", "Transactions");
         }
     }
 }
