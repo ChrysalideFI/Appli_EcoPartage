@@ -23,9 +23,8 @@ namespace Appli_EcoPartage.Data
         public int IdAnnonce { get; set; }
         public required virtual Annonces Annonce { get; set; }
 
-        [ForeignKey("AnnoncePoints")]
-        public int AnnoncePoint { get; set; }
-        public required virtual Annonces AnnoncePoints { get; set; }
+        [Required]
+        public string Status { get; set; } = "Pending";
 
         [Required]
         public DateTime DateTransaction { get; set; }

@@ -78,13 +78,13 @@ namespace Appli_EcoPartage.Data
             // Configuration des relations pour Transactions
             modelBuilder.Entity<Transactions>()
                 .HasOne(t => t.UserGiver)
-                .WithMany()
+                .WithMany(u => u.TransactionsGiven)
                 .HasForeignKey(t => t.UserIdGiver)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Transactions>()
                 .HasOne(t => t.UserRecipient)
-                .WithMany()
+                .WithMany(u => u.TransactionsRecived)
                 .HasForeignKey(t => t.UserIdRecipient)
                 .OnDelete(DeleteBehavior.Restrict);
 
@@ -93,12 +93,6 @@ namespace Appli_EcoPartage.Data
             .WithMany()
             .HasForeignKey(t => t.IdAnnonce)
             .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<Transactions>()
-                .HasOne(t => t.AnnoncePoints)
-                .WithMany()
-                .HasForeignKey(t => t.AnnoncePoint)
-                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Users>()
                .HasMany(u => u.CommentsGiven)
