@@ -20,6 +20,7 @@ namespace Appli_EcoPartage.Controllers
         }
 
         // GET: Annonces
+        [Authorize]
         public async Task<IActionResult> Index()
         {
             var applicationDbContext = _context.Annonces.Include(a => a.User);

@@ -18,14 +18,34 @@ namespace Appli_EcoPartage.Controllers
             _dbContext = dbContext;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var applicationDbContext = _dbContext.Annonces.Include(a => a.User);
+            return View(await applicationDbContext.ToListAsync());
         }
 
-        public IActionResult Privacy()
+        [Authorize]
+        public async Task<IActionResult> Details(int? id)
         {
-            return View();
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var annonces = await _dbContext.Annonces
+            .Include(a => a.User)
+            .Include(a => a.AnnoncesTags)
+                .ThenInclude(at => at.Tag)
+            .Include(a => a.AnnoncesGeoSectors)
+                .ThenInclude(ags => ags.GeographicalSector)
+            .FirstOrDefaultAsync(m => m.IdAnnonce == id);
+
+            if (annonces == null)
+            {
+                return NotFound();
+            }
+
+            return View(annonces);
         }
 
         [Authorize]

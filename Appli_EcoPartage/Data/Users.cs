@@ -11,7 +11,7 @@ namespace Appli_EcoPartage.Data
         public Users() : base()
         {
         }
-        public int Points { get; set; }
+        public int Points { get; set; } = 5;
         public required virtual ICollection<Comments> CommentsGiven { get; set; }
         public required virtual ICollection<Comments> CommentsRecived { get; set; }
         
