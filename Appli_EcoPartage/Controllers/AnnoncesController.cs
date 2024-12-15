@@ -21,9 +21,27 @@ namespace Appli_EcoPartage.Controllers
 
         // GET: Annonces
         [Authorize]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString)
         {
-            var applicationDbContext = _context.Annonces.Include(a => a.User);
+            ViewBag.CurrentFilter = searchString;
+            var annonces = from a in _context.Annonces
+                      .Include(a => a.User)
+                      .Include(a => a.AnnoncesTags)
+                          .ThenInclude(at => at.Tag)
+                           select a;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                annonces = annonces.Where(a => a.Titre.Contains(searchString) ||
+                                               a.Description.Contains(searchString) ||
+                                               a.AnnoncesTags.Any(at => at.Tag.CategoryName.Contains(searchString)));
+            }
+            // Trie par date de publication et sélectionne les tois dernières annonces postées
+            annonces = annonces.OrderByDescending(a => a.Date).Take(3);
+
+            return View(await annonces.ToListAsync());
+
+        var applicationDbContext = _context.Annonces.Include(a => a.User);
             return View(await applicationDbContext.ToListAsync());
         }
 
