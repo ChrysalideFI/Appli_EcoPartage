@@ -16,6 +16,13 @@
     <p>Use your points to get rewards!</p>
 </div>
 
+@if (TempData["TransactionError"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["TransactionError"]
+    </div>
+}
+
 <table class="table">
     <thead>
         <tr>
@@ -42,32 +49,48 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Titre)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Points)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Date)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Active)
-            </td>
-            <td>
-                <a asp-controller="Profile" asp-action="Details" asp-route-id="@item.User.Id">
-                    @Html.DisplayFor(modelItem => item.User.Email)
-                </a>
-            </td>
-            <td>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Titre)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Points)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Date)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Active)
+                </td>
+                <td>
+                    <a asp-controller="Profile" asp-action="Details" asp-route-id="@item.User.Id">
+                        @Html.DisplayFor(modelItem => item.User.Email)
+                    </a>
+                </td>
+                <td>
                     <a asp-action="Details" asp-route-id="@item.IdAnnonce">Details</a>
-            </td>
-         </tr>
+                    @if (item.IdUser.ToString() == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value)
+                    {
+                        <a asp-action="Edit" asp-route-id="@item.IdAnnonce">Edit</a>
+                        <a asp-action="Delete" asp-route-id="@item.IdAnnonce">Delete</a>
+                    }
+                </td>
+                <td>
+                    @if (item.IdUser.ToString() != User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value)
+                    {
+                        <form asp-controller="Transactions" asp-action="CreateTransaction" method="post" class="d-inline">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="annonceId" value="@item.IdAnnonce" />
+                            <button type="submit" class="btn btn-success btn-sm">Trade</button>
+                        </form>
+                    }
+                </td>
+            </tr>
         }
     </tbody>
 </table>

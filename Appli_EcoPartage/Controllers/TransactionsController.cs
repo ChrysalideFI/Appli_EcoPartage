@@ -93,7 +93,7 @@ namespace Appli_EcoPartage.Controllers
             if (buyer.Points < annonce.Points)
             {
                 TempData["TransactionError"] = "Insufficient points to create this transaction.";
-                return RedirectToAction("Index", "Annonces");
+                return RedirectToAction("Index", "Home");
             }
 
             var transaction = new Transactions
@@ -120,7 +120,7 @@ namespace Appli_EcoPartage.Controllers
             }
 
             TempData["Success"] = "Transaction created successfully.";
-            return RedirectToAction("Index", "Annonces");
+            return RedirectToAction("Index", "Transactions");
         }
 
         [Authorize]
