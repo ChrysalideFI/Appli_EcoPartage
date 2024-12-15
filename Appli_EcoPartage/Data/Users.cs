@@ -17,7 +17,7 @@ namespace Appli_EcoPartage.Data
         
         public required virtual ICollection<Annonces> MyAnnonces { get; set; }
 
-        public required virtual ICollection<Transactions> TransactionsGiven { get; set; }
-        public required virtual ICollection<Transactions> TransactionsRecived { get; set; }
+        public required virtual ICollection<Transactions> TransactionsSeller { get; set; }
+        public required virtual ICollection<Transactions> TransactionsBuyer { get; set; }
     }
 }

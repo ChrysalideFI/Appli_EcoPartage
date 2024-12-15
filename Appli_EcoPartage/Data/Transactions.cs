@@ -11,13 +11,13 @@ namespace Appli_EcoPartage.Data
         [Key]
         public int IdTransaction { get; set; }
 
-        [ForeignKey("UserGiver")]
-        public int UserIdGiver { get; set; }
-        public required virtual Users UserGiver { get; set; }
+        [ForeignKey("UserSeller")]
+        public int UserIdSeller { get; set; }
+        public required virtual Users UserSeller { get; set; }
 
-        [ForeignKey("UserRecipient")]
-        public int UserIdRecipient { get; set; }
-        public required virtual Users UserRecipient { get; set; }
+        [ForeignKey("UserBuyer")]
+        public int UserIdBuyer{ get; set; }
+        public required virtual Users UserBuyer { get; set; }
 
         [ForeignKey("Annonce")]
         public int IdAnnonce { get; set; }
