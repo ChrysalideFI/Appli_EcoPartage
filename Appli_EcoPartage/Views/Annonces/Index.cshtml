@@ -6,6 +6,13 @@
 
 <h1>Annonces</h1>
 
+@if (TempData["TransactionError"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["TransactionError"]
+    </div>
+}
+
 <p>
     <a asp-action="Create">Create New</a>
 </p>
@@ -63,6 +70,16 @@
                     <a asp-action="Edit" asp-route-id="@item.IdAnnonce">Edit</a>
                     <a asp-action="Delete" asp-route-id="@item.IdAnnonce">Delete</a>
                  }
+            </td>
+            <td>
+                @if (item.IdUser.ToString() != User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value)
+                {
+                    <form asp-controller="Transactions" asp-action="CreateTransaction" method="post" class="d-inline">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="annonceId" value="@item.IdAnnonce" />
+                        <button type="submit" class="btn btn-success btn-sm">Trade</button>
+                    </form>
+                }
             </td>
         </tr>
 }

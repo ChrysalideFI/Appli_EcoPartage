@@ -1,0 +1,19 @@
+﻿@model Appli_EcoPartage.Data.Transactions
+
+<h1>Transaction Details</h1>
+<p><strong>Annonce:</strong> @Model.Annonce.Titre</p>
+<p><strong>Buyer:</strong> @Model.UserBuyer.UserName</p>
+<p><strong>Seller:</strong> @Model.UserSeller.UserName</p>
+<p><strong>Date:</strong> @Model.DateTransaction.ToString("yyyy-MM-dd HH:mm")</p>
+<p><strong>Status:</strong> @Model.Status</p>
+
+@if (Model.Status == "Pending" && Model.UserIdSeller.ToString() == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value)
+{
+    <form asp-action="ProcessTransaction" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="id" value="@Model.IdTransaction" />
+        <button name="action" value="Accept" class="btn btn-success">Accept</button>
+        <button name="action" value="Decline" class="btn btn-danger">Decline</button>
+    </form>
+}
+
