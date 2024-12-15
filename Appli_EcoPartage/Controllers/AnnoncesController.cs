@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Appli_EcoPartage.Data;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Appli_EcoPartage.Controllers
 {
@@ -26,6 +27,7 @@ namespace Appli_EcoPartage.Controllers
         }
 
         // GET: Annonces/Details/5
+        [Authorize]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -50,6 +52,7 @@ namespace Appli_EcoPartage.Controllers
         }
 
         // GET: Annonces/Create
+        [Authorize]
         public IActionResult Create()
         {
             var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
@@ -76,6 +79,7 @@ namespace Appli_EcoPartage.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> Create(
             [Bind("IdAnnonce,Titre,Description,Points,Date,Active,IdUser")] Annonces annonces,
             List<int> selectedTags,
@@ -145,6 +149,7 @@ namespace Appli_EcoPartage.Controllers
         }
 
         // GET: Annonces/Edit/5
+        [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -182,6 +187,7 @@ namespace Appli_EcoPartage.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> Edit(int id, 
                                                [Bind("IdAnnonce,Titre,Description,Points,Date,Active,IdUser")] Annonces annonces, 
                                                List<int> selectedTags,
@@ -264,6 +270,7 @@ namespace Appli_EcoPartage.Controllers
         }
 
         // GET: Annonces/Delete/5
+        [Authorize]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -295,6 +302,7 @@ namespace Appli_EcoPartage.Controllers
         // POST: Annonces/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var annonces = await _context.Annonces

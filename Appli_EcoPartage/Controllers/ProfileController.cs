@@ -1,4 +1,5 @@
 ﻿using Appli_EcoPartage.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
@@ -15,6 +16,7 @@ namespace Appli_EcoPartage.Controllers
         }
 
         // GET: Profile/Details/5
+        [Authorize]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -43,6 +45,7 @@ namespace Appli_EcoPartage.Controllers
         // POST: Profile/AddComment
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> AddComment(int RecipientId, string Notice)
         {
             var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -78,6 +81,7 @@ namespace Appli_EcoPartage.Controllers
         // POST: Profile/DeleteComment/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> DeleteComment(int id)
         {
             var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
