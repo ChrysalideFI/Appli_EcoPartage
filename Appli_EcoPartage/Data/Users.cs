@@ -20,5 +20,9 @@ namespace Appli_EcoPartage.Data
 
         public virtual ICollection<Transactions> TransactionsSeller { get; set; }
         public virtual ICollection<Transactions> TransactionsBuyer { get; set; }
+
+        // Collection of contact messages
+        public virtual ICollection<ContactMessage> ContactMessages { get; set; }
+
     }
 }

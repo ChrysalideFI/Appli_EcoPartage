@@ -16,6 +16,7 @@ namespace Appli_EcoPartage.Data
         public DbSet<AnnoncesTags> AnnoncesTags { get; set; }
         public DbSet<GeographicalSector> GeographicalSectors { get; set; }
         public DbSet<AnnoncesGeoSector> AnnoncesGeoSectors { get; set; }
+        public DbSet<ContactMessage> ContactMessages { get; set; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
@@ -111,6 +112,13 @@ namespace Appli_EcoPartage.Data
                 .WithOne(a => a.User)
                 .HasForeignKey(a => a.IdUser)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<ContactMessage>()
+                .HasOne(cm => cm.User)
+                .WithMany(u => u.ContactMessages)
+                .HasForeignKey(cm => cm.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
         }
     }
 }

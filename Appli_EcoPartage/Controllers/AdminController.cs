@@ -133,16 +133,25 @@ namespace Appli_EcoPartage.Controllers
             return View(user);
         }
 
+        // GET: AdminController/Alluser
         public async Task<IActionResult> Alluser()
         {
             var alluser = await _DBcontext.Users.ToListAsync();
             return View(alluser);
         }
 
+        // GET: AdminController/AllService
         public async Task<IActionResult> AllService()
         {
             var allService = await _DBcontext.Annonces.ToListAsync();
             return View(allService);
+        }
+
+        // GET: AdminController/ContactMessages
+        public async Task<IActionResult> ContactMessage()
+        {
+            var messages = await _DBcontext.ContactMessages.Include(cm => cm.User).ToListAsync();
+            return View(messages);
         }
     }
 }

@@ -1,0 +1,32 @@
+﻿@model IEnumerable<Appli_EcoPartage.Data.ContactMessage>
+
+@{
+    ViewData["Title"] = "Contact Messages";
+}
+
+<h1>Contact Messages</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Subject</th>
+            <th>Message</th>
+            <th>Date Sent</th>
+            <th>User</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var message in Model)
+        {
+            <tr>
+                <td>@message.Subject</td>
+                <td>@message.Message</td>
+                <td>@message.DateSent.ToString("yyyy-MM-dd HH:mm")</td>
+                <td>@message.User.UserName</td>
+                <td>@(message.IsRead ? "Read" : "Unread")</td>
+            </tr>
+        }
+    </tbody>
+</table>
+

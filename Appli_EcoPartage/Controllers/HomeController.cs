@@ -53,6 +53,7 @@ namespace Appli_EcoPartage.Controllers
             return View(await annonces.ToListAsync());
         }
 
+        // GET: Annonces/Details/5
         [Authorize]
         public async Task<IActionResult> Details(int? id)
         {
@@ -269,6 +270,7 @@ namespace Appli_EcoPartage.Controllers
             return _dbContext.Annonces.Any(e => e.IdAnnonce == id);
         }
 
+        // page profil utilisateur
         [Authorize]
         public IActionResult Profile(int page = 1, int pageSize = 10)
         {
@@ -396,6 +398,37 @@ namespace Appli_EcoPartage.Controllers
 
             return PartialView("_AnnoncesPartial", annonces);
         }
+
+        // GET: Contact
+        [HttpGet]
+        public IActionResult Contact()
+        {
+            return View();
+        }
+
+        // POST: Contact
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize]
+        public async Task<IActionResult> Contact(ContactMessage contactMessage)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var newContactMessage = new ContactMessage
+            {
+                Subject = contactMessage.Subject,
+                Message = contactMessage.Message,
+                DateSent = DateTime.Now,
+                UserId = int.Parse(userId)
+            };
+
+            _dbContext.ContactMessages.Add(newContactMessage);
+            await _dbContext.SaveChangesAsync();
+
+            ViewBag.Message = "Your message has been sent successfully.";
+
+            return View(contactMessage);
+        }
+
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
