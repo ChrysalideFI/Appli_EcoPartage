@@ -1,0 +1,35 @@
+﻿@model IEnumerable<Appli_EcoPartage.Data.Users>
+
+@{
+    ViewData["Title"] = "All Users";
+}
+
+<h1>All Users</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>User Name</th>
+            <th>Email</th>
+            <th>Points</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.UserName</td>
+                <td>@user.Email</td>
+                <td>@user.Points</td>
+                <td>
+                    <a asp-action="EditUserPoints" asp-route-id="@user.Id" class="btn btn-primary">Edit Points</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+
+

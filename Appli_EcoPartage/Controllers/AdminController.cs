@@ -127,7 +127,9 @@ namespace Appli_EcoPartage.Controllers
         {
             if (id != service.IdAnnonce)
             {
+                Console.WriteLine("Service not found");
                 return NotFound();
+                
             }
 
             var existingService = await _DBcontext.Annonces.FindAsync(id);
@@ -135,7 +137,7 @@ namespace Appli_EcoPartage.Controllers
             {
                 existingService.Points = service.Points;
                 await _DBcontext.SaveChangesAsync();
-                return RedirectToAction(nameof(ValidateServices));
+                return RedirectToAction("Allservice", "Admin");
             }
             return View(service);
         }
@@ -166,9 +168,21 @@ namespace Appli_EcoPartage.Controllers
             {
                 existingUser.Points = user.Points;
                 await _DBcontext.SaveChangesAsync();
-                return RedirectToAction(nameof(ValidatedMembers));
+                return RedirectToAction("Alluser", "Admin");
             }
             return View(user);
+        }
+
+        public async Task<IActionResult> Alluser()
+        {
+            var alluser = await _DBcontext.Users.ToListAsync();
+            return View(alluser);
+        }
+
+        public async Task<IActionResult> AllService()
+        {
+            var allService = await _DBcontext.Annonces.ToListAsync();
+            return View(allService);
         }
     }
 }

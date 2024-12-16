@@ -1,16 +1,36 @@
 ﻿@model Appli_EcoPartage.Data.Annonces
 
 @{
-    ViewData["Title"] = "Modifier les Points de l'Annonce";
+    ViewData["Title"] = "Edit Annonce Points";
 }
 
-<h1>Modifier les Points de l'Annonce</h1>
+<h1>Edit Annonce Points</h1>
 
-<form asp-action="EditServicePoints" method="post">
-    <div class="form-group">
-        <label for="Points">Points</label>
-        <input type="number" class="form-control" id="Points" name="Points" value="@Model.Points" />
+<h4>Annonce</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="EditServicePoints">
+            <div class="form-group">
+                <label asp-for="Points" class="control-label"></label>
+                <input asp-for="Points" class="form-control" />
+                <span asp-validation-for="Points" class="text-danger"></span>
+
+            </div>
+            <input type="hidden" asp-for="IdAnnonce" />
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
     </div>
-    <input type="hidden" name="IdAnnonce" value="@Model.IdAnnonce" />
-    <button type="submit" class="btn btn-primary">Enregistrer</button>
-</form>
+</div>
+
+<div>
+    <a asp-action="AllService">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

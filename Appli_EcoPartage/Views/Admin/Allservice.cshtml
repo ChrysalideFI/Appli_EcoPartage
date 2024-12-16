@@ -1,0 +1,31 @@
+﻿@model IEnumerable<Appli_EcoPartage.Data.Annonces>
+
+@{
+    ViewData["Title"] = "All Annonces";
+}
+
+<h1>All Annonces</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Titre</th>
+            <th>Description</th>
+            <th>Points</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var annonce in Model)
+        {
+            <tr>
+                <td>@annonce.Titre</td>
+                <td>@annonce.Description</td>
+                <td>@annonce.Points</td>
+                <td>
+                    <a asp-action="EditServicePoints" asp-route-id="@annonce.IdAnnonce" class="btn btn-primary">Edit Points</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

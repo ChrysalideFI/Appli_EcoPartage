@@ -1,41 +1,43 @@
-﻿@model IEnumerable<Appli_EcoPartage.Data.Users>
+﻿@model Appli_EcoPartage.Data.Users
 
 @{
-    ViewData["Title"] = "Modifier les Points de l'Utilisateur";
+    ViewData["Title"] = "Edit User Points";
 }
 
-<h1>Modifier les Points de l'Utilisateur</h1>
+<h1>Edit User Points</h1>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Nom d'utilisateur</th>
-            <th>Email</th>
-            <th>Points</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var member in Model)
-        {
-            <tr>
-                <td>@member.UserName</td>
-                <td>@member.Email</td>
-                <td>@member.Points</td>
-                <td>
-                    <form asp-action="EditUserPoints" method="post">
-                        <div class="form-group">
-                            <label for="Points">Points</label>
-                            <input type="number" class="form-control" id="Points" name="Points" value="@member.Points" />
-                        </div>
-                        <input type="hidden" name="Id" value="@member.Id" />
-                        <button type="submit" class="btn btn-primary">Enregistrer</button>
-                    </form>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+<h4>User</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="EditUserPoints">
+            <div class="form-group">
+                <label asp-for="Points" class="control-label"></label>
+                <input asp-for="Points" class="form-control" />
+                <span asp-validation-for="Points" class="text-danger"></span>
+            </div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="AllUsers">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+
+
+
+
+
 
 
 
