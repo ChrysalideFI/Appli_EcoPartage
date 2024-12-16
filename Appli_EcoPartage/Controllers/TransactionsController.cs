@@ -178,7 +178,7 @@ namespace Appli_EcoPartage.Controllers
             }
 
             TempData["Success"] = "Transaction processed successfully.";
-            return RedirectToAction("Index", "Transactions");
+            return RedirectToAction("Details", "Transactions");
         }
 
         [Authorize]

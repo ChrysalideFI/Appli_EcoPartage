@@ -11,7 +11,7 @@ namespace Appli_EcoPartage.Data
         public Users() : base()
         {
         }
-        public int Points { get; set; } = 5;
+        public int Points { get; set; }
         public bool IsValidated { get; set; } = false; //Validation de l'inscription par l'admin
         public virtual ICollection<Comments> CommentsGiven { get; set; }
         public virtual ICollection<Comments> CommentsRecived { get; set; }
