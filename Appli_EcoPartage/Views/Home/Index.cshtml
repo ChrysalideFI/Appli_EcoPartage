@@ -91,7 +91,7 @@
                         }
                     </td>
                     <td>
-                        @if (item.IdUser.ToString() != User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value)
+                        @if (item.IdUser.ToString() != User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value && item.IsValidated == true)
                         {
                             <form asp-controller="Transactions" asp-action="CreateTransaction" method="post" class="d-inline">
                                 @Html.AntiForgeryToken()

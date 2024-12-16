@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Appli_EcoPartage.Data;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Security.Claims;
 
 namespace Appli_EcoPartage.Controllers
 {
@@ -23,6 +24,16 @@ namespace Appli_EcoPartage.Controllers
         [Authorize]
         public async Task<IActionResult> Index(string searchString)
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId != null)
+            {
+                var user = await _dbContext.Users.FindAsync(int.Parse(userId));
+                if (user != null)
+                {
+                    ViewBag.IsValidated = user.IsValidated;
+                }
+            }
+
             ViewBag.CurrentFilter = searchString;
             var annonces = from a in _dbContext.Annonces
                       .Include(a => a.User)

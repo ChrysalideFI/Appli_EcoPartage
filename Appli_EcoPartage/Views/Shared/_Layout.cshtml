@@ -24,15 +24,17 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Profile">Profile</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Annonces" asp-action="Index">Create Annonce</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Transactions" asp-action="Index">Transactions</a>
-                        </li>
+                        @if (ViewBag.IsValidated != null && ViewBag.IsValidated == true || User.IsInRole("Admin")){
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Profile">Profile</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Annonces" asp-action="Index">Create Annonce</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Transactions" asp-action="Index">Transactions</a>
+                            </li>
+                        }
                         
                         @if (User.IsInRole("Admin"))
                         {
@@ -40,13 +42,10 @@
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="ValidateMembers">Validate Inscription</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="ValidateServices">Validate Annonces</a>
-                            </li>
-                            <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="Allservice">Edit Annonce Points</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="Alluser">Edit User Points</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="Alluser">Edit Users' profile</a>
                             </li>
                             
                         }

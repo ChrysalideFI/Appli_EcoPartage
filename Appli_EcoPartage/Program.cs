@@ -44,6 +44,15 @@ using (var scope = app.Services.CreateScope())
         adminUser = new Users { UserName = "admin@example.com", Email = "admin@example.com" };
         await userManager.CreateAsync(adminUser, "AdminPassword123!");
         await userManager.AddToRoleAsync(adminUser, "Admin");
+    } 
+    else
+    {
+        // Ensure the admin user is validated
+        if (!adminUser.IsValidated)
+        {
+            adminUser.IsValidated = true;
+            await userManager.UpdateAsync(adminUser);
+        }
     }
 }
 // Configure the HTTP request pipeline.

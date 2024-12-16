@@ -1,10 +1,10 @@
 ﻿@model IEnumerable<Appli_EcoPartage.Data.Users>
 
 @{
-    ViewData["Title"] = "Valider les Membres";
+    ViewData["Title"] = "Validate Users";
 }
 
-<h1>Valider les Membres</h1>
+<h1>Validate Users</h1>
 
 <table class="table">
     <thead>
@@ -23,11 +23,7 @@
                 <td>
                     <form asp-action="ApproveMember" method="post">
                         <input type="hidden" name="memberId" value="@member.Id" />
-                        <button type="submit" class="btn btn-success">Approuver</button>
-                    </form>
-                    <form asp-action="RejectMember" method="post">
-                        <input type="hidden" name="memberId" value="@member.Id" />
-                        <button type="submit" class="btn btn-danger">Rejeter</button>
+                        <button type="submit" class="btn btn-success">Approve</button>
                     </form>
                 </td>
             </tr>

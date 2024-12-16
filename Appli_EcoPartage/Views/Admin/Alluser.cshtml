@@ -13,6 +13,7 @@
             <th>Email</th>
             <th>Points</th>
             <th>Actions</th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -25,6 +26,14 @@
                 <td>
                     <a asp-action="EditUserPoints" asp-route-id="@user.Id" class="btn btn-primary">Edit Points</a>
                 </td>
+                <td>
+                    <form asp-action="DeleteUser" method="post" class="d-inline">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="id" value="@user.Id" />
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </td>
+
             </tr>
         }
     </tbody>

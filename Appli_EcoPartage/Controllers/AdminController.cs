@@ -55,58 +55,18 @@ namespace Appli_EcoPartage.Controllers
             return RedirectToAction("ValidateMembers");
         }
 
-        // POST: AdminController/RejectMember/5
+        // POST: AdminController/DeleteUser/5
         [HttpPost]
-        public async Task<IActionResult> RejectMember(int memberId)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteUser(int id)
         {
-            var member = await _DBcontext.Users.FindAsync(memberId);
-            if (member != null)
+            var user = await _DBcontext.Users.FindAsync(id);
+            if (user != null)
             {
-                _DBcontext.Users.Remove(member);
+                _DBcontext.Users.Remove(user);
                 await _DBcontext.SaveChangesAsync();
             }
-            return RedirectToAction("ValidateMembers");
-        }
-
-        // GET: AdminController/ValidateServices
-        public async Task<IActionResult> ValidateServices()
-        {
-            var pendingServices = await _DBcontext.Annonces
-                .Where(a => !a.IsValidated)
-                .ToListAsync();
-            return View(pendingServices);
-        }
-
-        // POST: AdminController/ApproveService/5
-        [HttpPost]
-        public async Task<IActionResult> ApproveService(int serviceId)
-        {
-            var service = await _DBcontext.Annonces.FindAsync(serviceId);
-            if (service != null)
-            {
-                service.IsValidated = true;
-                service.Active = true;
-                var user = await _DBcontext.Users.FindAsync(service.IdUser);
-                if (user != null)
-                {
-                    user.Points += service.Points; // Points attribués pour le service
-                }
-                await _DBcontext.SaveChangesAsync();
-            }
-            return RedirectToAction("ValidateServices");
-        }
-
-        // POST: AdminController/RejectService/5
-        [HttpPost]
-        public async Task<IActionResult> RejectService(int serviceId)
-        {
-            var service = await _DBcontext.Annonces.FindAsync(serviceId);
-            if (service != null)
-            {
-                _DBcontext.Annonces.Remove(service);
-                await _DBcontext.SaveChangesAsync();
-            }
-            return RedirectToAction("ValidateServices");
+            return RedirectToAction(nameof(Alluser));
         }
         
         // GET: AdminController/EditServicePoints/5
