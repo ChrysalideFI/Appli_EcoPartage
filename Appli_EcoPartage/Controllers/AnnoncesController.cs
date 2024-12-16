@@ -21,7 +21,7 @@ namespace Appli_EcoPartage.Controllers
 
         // GET: Annonces
         [Authorize]
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
             return View();
         }
