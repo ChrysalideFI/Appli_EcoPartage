@@ -12,12 +12,13 @@ namespace Appli_EcoPartage.Data
         {
         }
         public int Points { get; set; } = 5;
-        public required virtual ICollection<Comments> CommentsGiven { get; set; }
-        public required virtual ICollection<Comments> CommentsRecived { get; set; }
+        public bool IsValidated { get; set; } = false; //Validation de l'inscription par l'admin
+        public virtual ICollection<Comments> CommentsGiven { get; set; }
+        public virtual ICollection<Comments> CommentsRecived { get; set; }
         
-        public required virtual ICollection<Annonces> MyAnnonces { get; set; }
+        public virtual ICollection<Annonces> MyAnnonces { get; set; }
 
-        public required virtual ICollection<Transactions> TransactionsSeller { get; set; }
-        public required virtual ICollection<Transactions> TransactionsBuyer { get; set; }
+        public virtual ICollection<Transactions> TransactionsSeller { get; set; }
+        public virtual ICollection<Transactions> TransactionsBuyer { get; set; }
     }
 }

@@ -16,8 +16,9 @@ namespace Appli_EcoPartage.Data
 
         public required int Points { get; set; }
         public required DateTime Date { get; set; }
+        public bool IsValidated { get; set; } = false; //Validation de l'annonce par l'admin
 
-        public bool Active { get; set; }
+        public bool Active { get; set; } //Anononce active ou archivée
 
         [ForeignKey("User")]
         public int IdUser { get; set; }

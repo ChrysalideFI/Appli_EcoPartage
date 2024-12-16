@@ -26,6 +26,26 @@ builder.Services.AddRazorPages();
 
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<int>>>();
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<Users>>();
+
+    // Create Admin role if it doesn't exist
+    if (!await roleManager.RoleExistsAsync("Admin"))
+    {
+        await roleManager.CreateAsync(new IdentityRole<int>("Admin"));
+    }
+
+    // Create a default admin user if it doesn't exist
+    var adminUser = await userManager.FindByEmailAsync("admin@example.com");
+    if (adminUser == null)
+    {
+        adminUser = new Users { UserName = "admin@example.com", Email = "admin@example.com" };
+        await userManager.CreateAsync(adminUser, "AdminPassword123!");
+        await userManager.AddToRoleAsync(adminUser, "Admin");
+    }
+}
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

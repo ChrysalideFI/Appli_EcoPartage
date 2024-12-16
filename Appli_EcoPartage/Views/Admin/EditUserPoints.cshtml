@@ -1,0 +1,41 @@
+﻿@model IEnumerable<Appli_EcoPartage.Data.Users>
+
+@{
+    ViewData["Title"] = "Modifier les Points de l'Utilisateur";
+}
+
+<h1>Modifier les Points de l'Utilisateur</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nom d'utilisateur</th>
+            <th>Email</th>
+            <th>Points</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var member in Model)
+        {
+            <tr>
+                <td>@member.UserName</td>
+                <td>@member.Email</td>
+                <td>@member.Points</td>
+                <td>
+                    <form asp-action="EditUserPoints" method="post">
+                        <div class="form-group">
+                            <label for="Points">Points</label>
+                            <input type="number" class="form-control" id="Points" name="Points" value="@member.Points" />
+                        </div>
+                        <input type="hidden" name="Id" value="@member.Id" />
+                        <button type="submit" class="btn btn-primary">Enregistrer</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+

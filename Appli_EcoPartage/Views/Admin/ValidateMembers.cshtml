@@ -1,0 +1,36 @@
+﻿@model IEnumerable<Appli_EcoPartage.Data.Users>
+
+@{
+    ViewData["Title"] = "Valider les Membres";
+}
+
+<h1>Valider les Membres</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nom d'utilisateur</th>
+            <th>Email</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var member in Model)
+        {
+            <tr>
+                <td>@member.UserName</td>
+                <td>@member.Email</td>
+                <td>
+                    <form asp-action="ApproveMember" method="post">
+                        <input type="hidden" name="memberId" value="@member.Id" />
+                        <button type="submit" class="btn btn-success">Approuver</button>
+                    </form>
+                    <form asp-action="RejectMember" method="post">
+                        <input type="hidden" name="memberId" value="@member.Id" />
+                        <button type="submit" class="btn btn-danger">Rejeter</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

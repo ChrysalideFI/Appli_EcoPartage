@@ -1,0 +1,16 @@
+﻿@model Appli_EcoPartage.Data.Annonces
+
+@{
+    ViewData["Title"] = "Modifier les Points de l'Annonce";
+}
+
+<h1>Modifier les Points de l'Annonce</h1>
+
+<form asp-action="EditServicePoints" method="post">
+    <div class="form-group">
+        <label for="Points">Points</label>
+        <input type="number" class="form-control" id="Points" name="Points" value="@Model.Points" />
+    </div>
+    <input type="hidden" name="IdAnnonce" value="@Model.IdAnnonce" />
+    <button type="submit" class="btn btn-primary">Enregistrer</button>
+</form>
