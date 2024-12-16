@@ -108,7 +108,7 @@ namespace Appli_EcoPartage.Controllers
             }
             return RedirectToAction("ValidateServices");
         }
-        [HttpPost]
+        
         // GET: AdminController/EditServicePoints/5
         public async Task<IActionResult> EditServicePoints(int id)
         {
