@@ -440,37 +440,44 @@ namespace Appli_EcoPartage.Controllers
         // GET: Contact
         [HttpGet]
         [Authorize]
-        public IActionResult Contact()
+        public async Task<IActionResult> ContactAsync()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (userId != null)
             {
-                var user = _dbContext.Users.Find(int.Parse(userId));
+                var user = await _dbContext.Users.FindAsync(int.Parse(userId));
                 if (user != null)
                 {
                     ViewBag.IsValidated = user.IsValidated;
                 }
+
+                var contactMessages = await _dbContext.ContactMessages
+                    .Where(cm => cm.UserId == int.Parse(userId))
+                    .ToListAsync();
+
+                var model = new ContactViewModel
+                {
+                    ContactMessage = new ContactMessage(),
+                    ContactMessages = contactMessages
+                };
+
+                return View(model);
             }
-            var contactMessages = _dbContext.ContactMessages.ToList(); // Récupère les messages de contact depuis la base de données
-            var model = new ContactViewModel
-            {
-                ContactMessage = new ContactMessage(),
-                ContactMessages = contactMessages
-            };
-            return View(model);
+
+            return RedirectToAction("Index");
         }
 
         // POST: Contact
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<IActionResult> Contact(ContactMessage contactMessage)
+        public async Task<IActionResult> Contact(ContactViewModel model)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var newContactMessage = new ContactMessage
             {
-                Subject = contactMessage.Subject,
-                Message = contactMessage.Message,
+                Subject = model.ContactMessage.Subject,
+                Message = model.ContactMessage.Message,
                 DateSent = DateTime.Now,
                 UserId = int.Parse(userId)
             };
@@ -480,7 +487,12 @@ namespace Appli_EcoPartage.Controllers
 
             ViewBag.Message = "Your message has been sent successfully.";
 
-            return View(contactMessage);
+            // Recharger les messages de contact pour l'utilisateur actuel
+            model.ContactMessages = await _dbContext.ContactMessages
+                .Where(cm => cm.UserId == int.Parse(userId))
+                .ToListAsync();
+
+            return View(model);
         }
 
         // GET: Home/UserContactMessages
