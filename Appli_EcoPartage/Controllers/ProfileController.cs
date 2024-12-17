@@ -16,6 +16,7 @@ namespace Appli_EcoPartage.Controllers
         }
 
         // GET: Profile/Details/5
+        // Cette méthode est utilisée pour afficher les détails de l'utilisateur
         [Authorize]
         public async Task<IActionResult> Details(int? id)
         {
@@ -36,6 +37,7 @@ namespace Appli_EcoPartage.Controllers
             }
 
             var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            // Vérifie si l'utilisateur connecté est le propriétaire de la page
             ViewBag.IsCurrentUser = currentUserId == user.Id.ToString();
             ViewBag.CurrentUserId = currentUserId;
 
@@ -43,6 +45,7 @@ namespace Appli_EcoPartage.Controllers
         }
 
         // POST: Profile/AddComment
+        // Cette méthode est utilisée pour ajouter un commentaire à un utilisateur
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
@@ -54,6 +57,7 @@ namespace Appli_EcoPartage.Controllers
                 return Unauthorized();
             }
 
+            // Recherche l'utilisateur donnant le commentaire et l'utilisateur recevant le commentaire
             var giver = await _context.Users.FindAsync(int.Parse(currentUserId));
             var recipient = await _context.Users.FindAsync(RecipientId);
 
@@ -79,6 +83,7 @@ namespace Appli_EcoPartage.Controllers
         }
 
         // POST: Profile/DeleteComment/5
+        // Cette méthode est utilisée pour supprimer un commentaire
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
@@ -94,6 +99,7 @@ namespace Appli_EcoPartage.Controllers
                 .Include(c => c.Giver)
                 .FirstOrDefaultAsync(c => c.IdComment == id);
 
+            // Vérifie si le commentaire existe et si l'utilisateur connecté est le propriétaire du commentaire
             if (comment == null || comment.Giver.Id != int.Parse(currentUserId))
             {
                 return Unauthorized();

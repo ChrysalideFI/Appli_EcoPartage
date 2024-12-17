@@ -15,21 +15,27 @@ namespace Appli_EcoPartage.Controllers
     {
         private readonly ApplicationDbContext _context;
 
+        // Constructor for AnnoncesController class
         public AnnoncesController(ApplicationDbContext context)
         {
             _context = context;
         }
 
         // GET: Annonces
-        [Authorize]
+        // Cette méthode est utilisée pour afficher la liste des annonces pour l'utilisateur connecté
+        [Authorize] // Cette annotation assure que seuls les utilisateurs authentifiés peuvent accéder
         public IActionResult Index()
         {
+            // Récupère l'identifiant de l'utilisateur connecté
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (userId != null)
             {
+                // Recherche l'utilisateur en utilisant id
                 var user = _context.Users.Find(int.Parse(userId));
                 if (user != null)
                 {
+                    // Stocke l'état de validation de l'utilisateur dans ViewBag
+                    // pour l'utiliser dans la vue
                     ViewBag.IsValidated = user.IsValidated;
                 }
             }
@@ -38,6 +44,7 @@ namespace Appli_EcoPartage.Controllers
 
         // GET: Annonces/Create
         [Authorize]
+        // Cette fonction est utilisée pour afficher le formulaire de création d'une annonce
         public IActionResult Create()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -46,9 +53,12 @@ namespace Appli_EcoPartage.Controllers
                 var user = _context.Users.Find(int.Parse(userId));
                 if (user != null)
                 {
+                    // Stocke l'état de validation de l'utilisateur dans ViewBag
+                    // pour l'utiliser dans la vue
                     ViewBag.IsValidated = user.IsValidated;
                 }
             }
+            // Récupère l'identifiant de l'utilisateur connecté
             var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
 
             if (string.IsNullOrEmpty(currentUserId))
@@ -63,7 +73,9 @@ namespace Appli_EcoPartage.Controllers
                  currentUserId
              );
 
+            // une liste déroulante pour sélectionner les tags
             ViewBag.Tags = new MultiSelectList(_context.Tags, "IdTag", "CategoryName");
+            // une liste déroulante pour sélectionner les secteurs géographiques
             ViewBag.Sectors = new MultiSelectList(_context.GeographicalSectors, "IdGeographicalSector", "Place");
             return View();
         }
@@ -71,7 +83,8 @@ namespace Appli_EcoPartage.Controllers
         // POST: Annonces/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
+        // Cette méthode est utilisée pour créer une nouvelle annonce
+        [HttpPost] // cette méthode répond aux requêtes HTTP POST
         [ValidateAntiForgeryToken]
         [Authorize]
         public async Task<IActionResult> Create(
@@ -93,9 +106,11 @@ namespace Appli_EcoPartage.Controllers
 
             if (ModelState.IsValid)
             {
+                // Ajoute l'annonce au contexte de la base de données
                 _context.Add(annonces);
                 await _context.SaveChangesAsync();
 
+                // Ajoute les tags sélectionnés à l'annonce
                 if (selectedTags != null && selectedTags.Any())
                 {
                     foreach (var tagId in selectedTags)
@@ -111,6 +126,7 @@ namespace Appli_EcoPartage.Controllers
                     }
                 }
 
+                // Ajoute les secteurs géographiques à l'annonce
                 if (selectedSectors != null && selectedSectors.Any())
                 {
                     foreach (var sectorid in selectedSectors)
@@ -130,6 +146,8 @@ namespace Appli_EcoPartage.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
+            // Prépare les listes déroulantes pour la vue
+            // en cas d'erreur de validation
             ViewBag.IdUser = new SelectList(
                 _context.Users.Where(u => u.Id.ToString() == currentUserId),
                 "Id",

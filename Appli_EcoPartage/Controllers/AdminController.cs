@@ -143,7 +143,7 @@ namespace Appli_EcoPartage.Controllers
         }
 
         // GET: AdminController/Alluser
-        // Get all users in the list
+        // Get all existed users in the list
         public async Task<IActionResult> Alluser()
         {
             var alluser = await _DBcontext.Users.ToListAsync();
@@ -151,6 +151,7 @@ namespace Appli_EcoPartage.Controllers
         }
 
         // GET: AdminController/AllService
+        // Get all existed annonces 
         public async Task<IActionResult> AllService()
         {
             var allService = await _DBcontext.Annonces.ToListAsync();
@@ -158,6 +159,7 @@ namespace Appli_EcoPartage.Controllers
         }
 
         // GET: AdminController/ContactMessages
+        // Get all message written by the user
         public async Task<IActionResult> ContactMessage()
         {
             var messages = await _DBcontext.ContactMessages.Include(cm => cm.User).ToListAsync();
@@ -165,6 +167,7 @@ namespace Appli_EcoPartage.Controllers
         }
 
         // POST: AdminController/MarkAsRead/5
+        // Admin can change the status of the recieved message
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> MarkAsRead(int id)

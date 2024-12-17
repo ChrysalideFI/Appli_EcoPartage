@@ -18,6 +18,8 @@ namespace Appli_EcoPartage.Controllers
             _logger = logger;
         }
 
+        // GET: Transactions
+        // cette méthode est utilisée pour afficher la liste des transactions pour l'utilisateur connecté
         [Authorize]
         public async Task<IActionResult> Index()
         {
@@ -47,6 +49,8 @@ namespace Appli_EcoPartage.Controllers
             return View(transactions);
         }
 
+        // GET: Transactions/Details/5
+        // cette méthode est utilisée pour afficher les détails d'une transaction
         [Authorize]
         public async Task<IActionResult> Details(int? id)
         {
@@ -74,7 +78,8 @@ namespace Appli_EcoPartage.Controllers
             return View(transaction);
         }
 
-
+        // POST: Transactions/CreateTransaction/5
+        // cette méthode est utilisée pour créer une transaction
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
@@ -96,20 +101,20 @@ namespace Appli_EcoPartage.Controllers
                 return NotFound();
             }
 
-            // check if the user is trying to create a transaction with himself
+            // Vérifie si l'utilisateur connecté est le vendeur
             if (annonce.IdUser.ToString() == currentUserId)
             {
                 return BadRequest("You cannot create a transaction with yourself.");
             }
 
-            // get the buyer info
+            // Récupère l'acheteur
             var buyer = await _context.Users.FindAsync(int.Parse(currentUserId));
             if (buyer == null)
             {
                 return NotFound();
             }
 
-            // check if the buyer has enough points
+            // Verifie si l'acheteur a suffisamment de points
             if (buyer.Points < annonce.Points)
             {
                 TempData["TransactionError"] = "Insufficient points to create this transaction.";
@@ -118,9 +123,9 @@ namespace Appli_EcoPartage.Controllers
 
             var transaction = new Transactions
             {
-                UserIdBuyer = buyer.Id, // buyer
+                UserIdBuyer = buyer.Id, // acheteur
                 UserBuyer = buyer,
-                UserIdSeller = annonce.IdUser, // seller
+                UserIdSeller = annonce.IdUser, // vendeur
                 UserSeller = annonce.User,
                 IdAnnonce = annonce.IdAnnonce,
                 Annonce = annonce,
@@ -143,6 +148,8 @@ namespace Appli_EcoPartage.Controllers
             return RedirectToAction("Index", "Transactions");
         }
 
+        // POST: Transactions/ProcessTransaction/5
+        // cette méthode est utilisée pour traiter une transaction (accepter ou refuser)
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -159,7 +166,7 @@ namespace Appli_EcoPartage.Controllers
                 return NotFound();
             }
 
-            // check if the user is the seller
+            // Vérifie si l'utilisateur est le vendeur
             var sellerId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
             if (transaction.UserIdSeller.ToString() != sellerId)
             {
@@ -168,6 +175,7 @@ namespace Appli_EcoPartage.Controllers
 
             try
             {
+                // Accepter ou refuser la transaction
                 if (action == "Accept")
                 {
                     if (transaction.UserBuyer.Points < transaction.Annonce.Points)
@@ -175,6 +183,7 @@ namespace Appli_EcoPartage.Controllers
                         TempData["TransactionError"] = "Buyer's points are insufficient to complete the transaction.";
                         return RedirectToAction("Details", "Transactions", new { id = transaction.IdTransaction });
                     }
+                    // Mettre à jour le statut de la transaction 
                     transaction.Status = "In Progress";
                 }
                 else if (action == "Decline")
@@ -198,6 +207,8 @@ namespace Appli_EcoPartage.Controllers
             return RedirectToAction("Details", "Transactions", new { id = transaction.IdTransaction });
         }
 
+        // POST: Transactions/CompleteTransaction/5
+        // cette méthode est utilisée pour compléter une transaction (lorsque l'acheteur a reçu la service)
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -214,7 +225,6 @@ namespace Appli_EcoPartage.Controllers
                 return NotFound();
             }
 
-            // check if the user is the buyer
             var buyerId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
             if (transaction.UserIdBuyer.ToString() != buyerId)
             {
@@ -223,8 +233,10 @@ namespace Appli_EcoPartage.Controllers
 
             try
             {
+                // Mettre à jour le statut de la transaction
                 if (transaction.Status == "In Progress")
                 {
+                    // Mettre à jour les points de l'acheteur et du vendeur
                     transaction.UserBuyer.Points -= transaction.Annonce.Points;
                     transaction.UserSeller.Points += transaction.Annonce.Points;
                     transaction.Status = "Completed";

@@ -21,6 +21,7 @@ namespace Appli_EcoPartage.Controllers
         }
 
         // GET: Annonces
+        // Méthode pour afficher la page d'accueil avec une liste d'annonces
         public async Task<IActionResult> Index(string searchString)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -29,11 +30,14 @@ namespace Appli_EcoPartage.Controllers
                 var user = await _dbContext.Users.FindAsync(int.Parse(userId));
                 if (user != null)
                 {
+                    // Stocke l'état de validation de l'utilisateur dans ViewBag
                     ViewBag.IsValidated = user.IsValidated;
                 }
             }
 
+            // Stocke le filtre de recherche actuel dans ViewBag
             ViewBag.CurrentFilter = searchString;
+
             var annonces = _dbContext.Annonces
                       .Include(a => a.User)
                       .Include(a => a.AnnoncesTags)
@@ -42,7 +46,7 @@ namespace Appli_EcoPartage.Controllers
                           .ThenInclude(ags => ags.GeographicalSector)
                           .AsQueryable();
 
-
+            // Filtre les annonces en fonction de la chaîne de recherche
             if (!String.IsNullOrEmpty(searchString))
             {
                 annonces = annonces.Where(a => a.Titre.Contains(searchString) ||
@@ -50,6 +54,7 @@ namespace Appli_EcoPartage.Controllers
                                                a.AnnoncesTags.Any(at => at.Tag.CategoryName.Contains(searchString)) ||
                                                a.AnnoncesGeoSectors.Any(ags => ags.GeographicalSector.Place.Contains(searchString)));
             }
+
             // Trie par date de publication et sélectionne les tois dernières annonces postées
             annonces = annonces.OrderByDescending(a => a.Date).Take(3);
 
@@ -65,6 +70,7 @@ namespace Appli_EcoPartage.Controllers
         }
 
         // GET: Annonces/Details/5
+        // Méthode pour afficher les détails d'une annonce selon id
         public async Task<IActionResult> Details(int? id)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -99,6 +105,7 @@ namespace Appli_EcoPartage.Controllers
         }
 
         // GET: Annonces/Edit/5
+        // Méthode pour afficher le formulaire de modification d'une annonce
         [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
@@ -129,13 +136,15 @@ namespace Appli_EcoPartage.Controllers
                 return NotFound();
             }
 
+            // Récupère l'identifiant de l'utilisateur connecté
             var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            // Vérifie si l'utilisateur connecté est l'auteur de l'annonce
             if (currentUserId == null || (annonces.IdUser.ToString() != currentUserId && !User.IsInRole("Admin")))
             {
                 return RedirectToAction("AccessDenied");
             }
 
-
+            // les listes déroulantes pour les tags et les secteurs géographiques
             ViewBag.Tags = new MultiSelectList(_dbContext.Tags, "IdTag", "CategoryName", annonces.AnnoncesTags.Select(at => at.IdTag));
             ViewBag.Sectors = new MultiSelectList(_dbContext.GeographicalSectors, "IdGeographicalSector", "Place", annonces.AnnoncesGeoSectors.Select(ags => ags.IdGeographicalSector));
             ViewData["IdUser"] = new SelectList(_dbContext.Users, "Id", "Id", annonces.IdUser);
@@ -145,6 +154,7 @@ namespace Appli_EcoPartage.Controllers
         // POST: Annonces/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // Méthode pour modifier une annonce selon id
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
@@ -167,14 +177,17 @@ namespace Appli_EcoPartage.Controllers
 
                     var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
                     var existingAnnonce = await _dbContext.Annonces.AsNoTracking().FirstOrDefaultAsync(a => a.IdAnnonce == id);
+                    // Vérifie si l'utilisateur connecté est l'auteur de l'annonce ou un administrateur
                     if (existingAnnonce == null || currentUserId == null || (existingAnnonce.IdUser.ToString() != currentUserId && !User.IsInRole("Admin")))
                     {
                         return RedirectToAction("AccessDenied");
                     }
 
+                    // Supprime les tags existants de l'annonce
                     var existingTags = _dbContext.AnnoncesTags.Where(at => at.IdAnnonce == annonces.IdAnnonce).ToList();
                     _dbContext.AnnoncesTags.RemoveRange(existingTags);
 
+                    // Ajoute les nouveaux tags sélectionnés à l'annonce
                     if (selectedTags != null && selectedTags.Any())
                     {
                         foreach (var tagId in selectedTags)
@@ -190,8 +203,10 @@ namespace Appli_EcoPartage.Controllers
                         }
                     }
 
+                    // Supprime les secteurs géographiques existants de l'annonce
                     var existingSectors = _dbContext.AnnoncesGeoSectors.Where(ags => ags.IdAnnonce == annonces.IdAnnonce).ToList();
                     _dbContext.AnnoncesGeoSectors.RemoveRange(existingSectors);
+                    // Ajoute les nouveaux secteurs géographiques sélectionnés à l'annonce
                     if (selectedSectors != null && selectedSectors.Any())
                     {
                         foreach (var sectorid in selectedSectors)
@@ -230,6 +245,7 @@ namespace Appli_EcoPartage.Controllers
         }
 
         // GET: Annonces/Delete/5
+        // Méthode pour afficher la page de suppression d'une annonce
         [Authorize]
         public async Task<IActionResult> Delete(int? id)
         {
@@ -261,6 +277,7 @@ namespace Appli_EcoPartage.Controllers
             }
 
             var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            // Vérifie si l'utilisateur connecté est l'auteur de l'annonce ou un administrateur
             if (currentUserId == null || (annonces.IdUser.ToString() != currentUserId && !User.IsInRole("Admin")))
             {
                 return RedirectToAction("AccessDenied");
@@ -270,6 +287,7 @@ namespace Appli_EcoPartage.Controllers
         }
 
         // POST: Annonces/Delete/5
+        // Méthode pour supprimer une annonce selon id
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         [Authorize]
@@ -310,7 +328,8 @@ namespace Appli_EcoPartage.Controllers
             return _dbContext.Annonces.Any(e => e.IdAnnonce == id);
         }
 
-        // page profil utilisateur
+        // GET: Home/Profile
+        // Méthode pour afficher le profil de l'utilisateur
         [Authorize]
         public IActionResult Profile(int page = 1, int pageSize = 10)
         {
@@ -340,7 +359,9 @@ namespace Appli_EcoPartage.Controllers
                 return RedirectToAction("Error");
             }
 
+            // Récupère les commentaires reçus par l'utilisateur
             var totalComments = user.CommentsRecived.Count;
+            // Pagination des commentaires
             var comments = user.CommentsRecived
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
@@ -352,6 +373,7 @@ namespace Appli_EcoPartage.Controllers
                 }).ToList();
 
             var totalMesAnnonces = user.MyAnnonces.Count;
+            // Pagination des annonces
             var annonces = user.MyAnnonces
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
@@ -374,12 +396,15 @@ namespace Appli_EcoPartage.Controllers
                 Annonces = annonces
             };
 
+            // Pagination
             ViewBag.TotalPages = (int)Math.Ceiling((double)totalComments / pageSize);
             ViewBag.CurrentPage = page;
 
             return View(viewModel);
         }
 
+        // GET: Home/LoadComments
+        // Méthode pour charger les commentaires de l'utilisateur
         [Authorize]
         public IActionResult LoadComments(int page = 1, int pageSize = 10)
         {
@@ -413,6 +438,8 @@ namespace Appli_EcoPartage.Controllers
             return PartialView("_CommentsPartial", comments);
         }
 
+        // GET: Home/LoadAnnonces
+        // Méthode pour charger les annonces de l'utilisateur
         [Authorize]
         public IActionResult LoadAnnonces(int page = 1, int pageSize = 10)
         {
@@ -448,6 +475,7 @@ namespace Appli_EcoPartage.Controllers
         }
 
         // GET: Contact
+        // Méthode pour afficher la page de contact
         [HttpGet]
         [Authorize]
         public async Task<IActionResult> ContactAsync()
@@ -478,6 +506,7 @@ namespace Appli_EcoPartage.Controllers
         }
 
         // POST: Contact
+        // Méthode pour envoyer un message de contact
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
@@ -506,6 +535,7 @@ namespace Appli_EcoPartage.Controllers
         }
 
         // GET: Home/UserContactMessages
+        // Méthode pour charger les messages de contact de l'utilisateur pour l'admin 
         [Authorize]
         public async Task<IActionResult> UserContactMessages()
         {
