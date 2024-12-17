@@ -11,19 +11,21 @@ namespace Appli_EcoPartage.Controllers
     {
         private readonly ApplicationDbContext _DBcontext;
 
-
+        // Constructor for AdminController class
         public AdminController(ApplicationDbContext context)
         {
+            // Initialize the database context
             _DBcontext = context;
         }
 
-        // GET: AdminController
+        // GET: AdminController/Index
         public ActionResult Index()
         {
             return View();
         }
 
         // GET: AdminController/ValidatedMembers
+        // Get all validated users
         public async Task<IActionResult> ValidatedMembers()
         {
             var validatedMembers = await _DBcontext.Users
@@ -33,6 +35,7 @@ namespace Appli_EcoPartage.Controllers
         }
 
         // GET: AdminController/ValidateMembers
+        // Get all invaidated users for admin to validate
         public async Task<IActionResult> ValidateMembers()
         {
             var pendingMembers = await _DBcontext.Users
@@ -41,7 +44,8 @@ namespace Appli_EcoPartage.Controllers
             return View(pendingMembers);
         }
 
-        // POST: AdminController/ApproveMember/5
+        // POST: AdminController/ApproveMember/id
+        // Admin can approve an invalidated user in the list
         [HttpPost]
         public async Task<IActionResult> ApproveMember(int memberId)
         {
@@ -49,13 +53,14 @@ namespace Appli_EcoPartage.Controllers
             if (member != null)
             {
                 member.IsValidated = true;
-                member.Points += 100; // Points de bienvenue
+                member.Points += 100; // Welcome Points 
                 await _DBcontext.SaveChangesAsync();
             }
             return RedirectToAction("ValidateMembers");
         }
 
-        // POST: AdminController/DeleteUser/5
+        // POST: AdminController/DeleteUser/id
+        // Admin can delete a user from the list
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteUser(int id)
@@ -68,8 +73,9 @@ namespace Appli_EcoPartage.Controllers
             }
             return RedirectToAction(nameof(Alluser));
         }
-        
-        // GET: AdminController/EditServicePoints/5
+
+        // GET: AdminController/EditServicePoints/id
+        // Get all annonces which were created by users
         public async Task<IActionResult> EditServicePoints(int id)
         {
             var service = await _DBcontext.Annonces.FindAsync(id);
@@ -80,7 +86,8 @@ namespace Appli_EcoPartage.Controllers
             return View(service);
         }
 
-        // POST: AdminController/EditServicePoints/5
+        // POST: AdminController/EditServicePoints/id
+        // Admin can edit the points of an annonce which is created by users in the list
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditServicePoints(int id, [Bind("IdAnnonce,Points")] Annonces service)
@@ -102,7 +109,8 @@ namespace Appli_EcoPartage.Controllers
             return View(service);
         }
 
-        // GET: AdminController/EditUserPoints/5
+        // GET: AdminController/EditUserPoints/id
+        // Get all users in the list with a parameter id
         public async Task<IActionResult> EditUserPoints(int id)
         {
             var user = await _DBcontext.Users.FindAsync(id);
@@ -113,7 +121,8 @@ namespace Appli_EcoPartage.Controllers
             return View(user);
         }
 
-        // POST: AdminController/EditUserPoints/5
+        // POST: AdminController/EditUserPoints/id
+        // Admin can edit the points of a user in the list
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditUserPoints(int id, [Bind("Id,Points")] Users user)
@@ -134,6 +143,7 @@ namespace Appli_EcoPartage.Controllers
         }
 
         // GET: AdminController/Alluser
+        // Get all users in the list
         public async Task<IActionResult> Alluser()
         {
             var alluser = await _DBcontext.Users.ToListAsync();
