@@ -1,42 +1,44 @@
 ﻿@model IEnumerable<Appli_EcoPartage.Data.Annonces>
 
-@{
+    @{
     ViewData["Title"] = "Home Page";
-}
+    }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome to EcoPartage</h1>    
-    <div class="searchBar">
-        <form asp-action="Index" method="get">
-            <input type="text" name="searchString" placeholder="Searching your annonce" value="@ViewData["CurrentFilter"]" />
-            <input type="submit" value="Search" />
-        </form>
-    </div>
-    <p>Share your eco-friendly service and earn points!</p>
-    <p>Use your points to get rewards!</p>
-</div>
+                      <div class="text-center">
+                          <h1 class="display-4">Welcome to EcoPartage</h1>
+                          <!-- Barre de recherche pour les annonces -->
+                          <div class="searchBar">
+                              <form asp-action="Index" method="get">
+                                  <input type="text" name="searchString" placeholder="Searching your annonce" value="@ViewData["CurrentFilter"]" />
+                                  <input type="submit" value="Search" />
+                              </form>
+                          </div>
+                          <p>Share your eco-friendly service and earn points!</p>
+                          <p>Use your points to get rewards!</p>
+                      </div>
 
-@if (TempData["TransactionError"] != null)
+    <!-- Affiche un message d'erreur de transaction s'il y en a un -->
+    @if (TempData["TransactionError"] != null)
 {
     <div class="alert alert-danger">
         @TempData["TransactionError"]
     </div>
 }
 
-<div>
-    <button id="AllAnnonces">All Annonces</button>
-    @if (User.Identity.IsAuthenticated && !User.IsInRole("Admin"))
+    <div>
+        <button id="AllAnnonces">All Annonces</button>
+        @if (User.Identity.IsAuthenticated && !User.IsInRole("Admin"))
     {
-    <button id="MyAnnonces">My Annonces</button>
+        <button id="MyAnnonces">My Annonces</button>
     }
-</div>
+    </div>
 
-<div id="annoncesContainer" style="display:none;">
+    <div id="annoncesContainer" style="display:none;">
 
-</div>
+    </div>
 
-<div id="originalContent">
-    @if (ViewBag.Message != null)
+    <div id="originalContent">
+        @if (ViewBag.Message != null)
     {
         <p>@ViewBag.Message</p>
     }
@@ -70,56 +72,57 @@
             <tbody>
                 @foreach (var item in Model)
                 {
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Titre)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Description)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Points)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Date)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Active)
-                        </td>
-                        <td>
-                            <a asp-controller="Profile" asp-action="Details" asp-route-id="@item.User.Id">
-                                @Html.DisplayFor(modelItem => item.User.Email)
-                            </a>
-                        </td>
-                        <td>
-                            <a asp-action="Details" asp-route-id="@item.IdAnnonce">Details</a>
-                            @if (item.IdUser.ToString() == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value || User.IsInRole("Admin"))
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Titre)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Description)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Points)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Date)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Active)
+                    </td>
+                    <td>
+                        <a asp-controller="Profile" asp-action="Details" asp-route-id="@item.User.Id">
+                            @Html.DisplayFor(modelItem => item.User.Email)
+                        </a>
+                    </td>
+                    <td>
+                        <a asp-action="Details" asp-route-id="@item.IdAnnonce">Details</a>
+                        @if (item.IdUser.ToString() == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value || User.IsInRole("Admin"))
                             {
-                                <a asp-action="Edit" asp-route-id="@item.IdAnnonce">Edit</a>
-                                <a asp-action="Delete" asp-route-id="@item.IdAnnonce">Delete</a>
+                        <a asp-action="Edit" asp-route-id="@item.IdAnnonce">Edit</a>
+                        <a asp-action="Delete" asp-route-id="@item.IdAnnonce">Delete</a>
                             }
-                        </td>
-                        <td>
-                            @if (item.IdUser.ToString() != User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value && ViewBag.IsValidated == true && !User.IsInRole("Admin") && item.Active == true)
+                    </td>
+                    <td>
+                        @if (item.IdUser.ToString() != User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value && ViewBag.IsValidated == true && !User.IsInRole("Admin") && item.Active == true)
                             {
-                                <form asp-controller="Transactions" asp-action="CreateTransaction" method="post" class="d-inline">
-                                    @Html.AntiForgeryToken()
-                                    <input type="hidden" name="annonceId" value="@item.IdAnnonce" />
-                                    <button type="submit" class="btn btn-success btn-sm">Trade</button>
-                                </form>
+                        <form asp-controller="Transactions" asp-action="CreateTransaction" method="post" class="d-inline">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="annonceId" value="@item.IdAnnonce" />
+                            <button type="submit" class="btn btn-success btn-sm">Trade</button>
+                        </form>
                             }
-                        </td>
-                    </tr>
+                    </td>
+                </tr>
                 }
             </tbody>
         </table>
         }
-</div>
+    </div>
 
-@section Scripts {
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
+    @section Scripts {
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script>
         $(document).ready(function () {
+            // Affiche les annonces de l'utilisateur connecté
             $('#MyAnnonces').click(function () {
                 $('#originalContent').hide();
                 $('#annoncesContainer').show();
@@ -129,11 +132,12 @@
             });
         });
 
+        // Affiche toutes les annonces
         $(document).ready(function () {
             $('#AllAnnonces').click(function () {
                 $('#originalContent').show();
                 $('#annoncesContainer').hide();
             });
         });
-    </script>
-}
+        </script>
+    }

@@ -10,47 +10,52 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
+        <!-- Formulaire pour éditer une annonce -->
         <form asp-action="Edit">
+            <!-- Affiche les erreurs de validation -->
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="IdAnnonce" />
-            <div class="form-group">
-                <label asp-for="IdUser" class="control-label"></label>
-                <select asp-for="IdUser" class="form-control" asp-items="ViewBag.IdUser"></select>
-                <span asp-validation-for="IdUser" class="text-danger"></span>
-            </div>
+            <!-- Titre de l'annonce -->
             <div class="form-group">
                 <label asp-for="Titre" class="control-label">Title</label>
                 <input asp-for="Titre" class="form-control" />
                 <span asp-validation-for="Titre" class="text-danger"></span>
             </div>
+            <!-- Description de l'annonce -->
             <div class="form-group">
                 <label asp-for="Description" class="control-label"></label>
                 <input asp-for="Description" class="form-control" />
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
+            <!-- Points associés à l'annonce -->
             <div class="form-group">
                 <label asp-for="Points" class="control-label"></label>
                 <input asp-for="Points" class="form-control" />
                 <span asp-validation-for="Points" class="text-danger"></span>
             </div>
+            <!-- Date de l'annonce -->
             <div class="form-group">
                 <label asp-for="Date" class="control-label"></label>
                 <input asp-for="Date" class="form-control" />
                 <span asp-validation-for="Date" class="text-danger"></span>
             </div>
+            <!-- Indique si l'annonce est active -->
             <div class="form-group form-check">
                 <label class="form-check-label">
                     <input class="form-check-input" asp-for="Active" /> @Html.DisplayNameFor(model => model.Active)
                 </label>
             </div>
+            <!-- Sélection des tags associés à l'annonce -->
             <div class="form-group">
                 <label>Tags</label>
                 <select id="selectedTags" name="selectedTags[]" multiple class="form-control" asp-items="ViewBag.Tags"></select>
             </div>
+            <!-- Sélection des secteurs géographiques associés à l'annonce -->
             <div class="form-group">
                 <label>Geographical Sectors</label>
                 <select id="selectedSectors" name="selectedSectors[]" multiple class="form-control" asp-items="ViewBag.Sectors"></select>
             </div>
+            <!-- Bouton pour soumettre le formulaire -->
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
@@ -58,6 +63,7 @@
     </div>
 </div>
 
+<!-- Lien pour retourner à la liste des annonces -->
 <div>
     <a asp-action="Index">Back to List</a>
 </div>

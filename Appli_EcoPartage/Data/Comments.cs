@@ -10,11 +10,11 @@ namespace Appli_EcoPartage.Data
         public DateTime Date { get; set; }
         public required string Notice { get; set; }
         [Required]
-        [ForeignKey("Giver")]
+        [ForeignKey("Giver")] //L'utilisateur qui a donné le commentaire
         public required int IdUserGiven { get; set; }
         public required virtual Users Giver { get; set; }
 
-        [ForeignKey("Recipient")]
+        [ForeignKey("Recipient")] //L'utilisateur qui a reçu le commentaire
         public required int IdUserRecipient { get; set; }
         public required virtual Users Recipient { get; set; }
     }

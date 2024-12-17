@@ -10,40 +10,40 @@
     <h4>Annonces</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             <div>Title</div>
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Titre)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Description)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Description)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Points)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Points)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Date)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Date)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Active)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Active)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.User)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.User.Id)
         </dd>
         <dt class="col-sm-2">
@@ -52,24 +52,28 @@
         <dd class="col-sm-10">
             @foreach (var item in Model.AnnoncesTags)
             {
-                <div>
-                    @item.Tag.CategoryName
-                </div>
+            <div>
+                @item.Tag.CategoryName
+            </div>
             }
         </dd>
+
+        <!-- Affiche les secteurs géographiques associés à l'annonce -->
         <dt>
             @Html.DisplayNameFor(model => model.AnnoncesGeoSectors)
         </dt>
         <dd>
             @foreach (var item in Model.AnnoncesGeoSectors)
             {
-                <div>
-                    @item.GeographicalSector.Place
-                </div>
+            <div>
+                @item.GeographicalSector.Place
+            </div>
             }
         </dd>
     </dl>
 </div>
+
+<!-- Lien pour retourner à la liste des annonces -->
 <div>
     <a asp-action="Index">Back to List</a>
 </div>

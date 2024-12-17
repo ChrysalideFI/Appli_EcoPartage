@@ -11,11 +11,11 @@ namespace Appli_EcoPartage.Data
         [Key]
         public int IdTransaction { get; set; }
 
-        [ForeignKey("UserSeller")]
+        [ForeignKey("UserSeller")] //Utilisateur qui donne le service
         public int UserIdSeller { get; set; }
         public required virtual Users UserSeller { get; set; }
 
-        [ForeignKey("UserBuyer")]
+        [ForeignKey("UserBuyer")] //Utilisateur qui reçoit le service
         public int UserIdBuyer{ get; set; }
         public required virtual Users UserBuyer { get; set; }
 
@@ -24,7 +24,7 @@ namespace Appli_EcoPartage.Data
         public required virtual Annonces Annonce { get; set; }
 
         [Required]
-        public string Status { get; set; } = "Pending";
+        public string Status { get; set; } = "Pending"; //Etat de la transaction : Pending, Accepted, Refused
 
         [Required]
         public DateTime DateTransaction { get; set; }

@@ -95,6 +95,7 @@ namespace Appli_EcoPartage.Data
             .HasForeignKey(t => t.IdAnnonce)
             .OnDelete(DeleteBehavior.Restrict);
 
+            // Configuration des relations pour Users
             modelBuilder.Entity<Users>()
                .HasMany(u => u.CommentsGiven)
                .WithOne(c => c.Giver)
