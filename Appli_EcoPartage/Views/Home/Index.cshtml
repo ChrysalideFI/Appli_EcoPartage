@@ -25,7 +25,10 @@
 
 <div>
     <button id="AllAnnonces">All Annonces</button>
+    @if (User.Identity.IsAuthenticated && !User.IsInRole("Admin"))
+    {
     <button id="MyAnnonces">My Annonces</button>
+    }
 </div>
 
 <div id="annoncesContainer" style="display:none;">
@@ -91,7 +94,7 @@
                         }
                     </td>
                     <td>
-                        @if (item.IdUser.ToString() != User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value && ViewBag.IsValidated == true)
+                        @if (item.IdUser.ToString() != User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value && ViewBag.IsValidated == true && !User.IsInRole("Admin"))
                         {
                             <form asp-controller="Transactions" asp-action="CreateTransaction" method="post" class="d-inline">
                                 @Html.AntiForgeryToken()
