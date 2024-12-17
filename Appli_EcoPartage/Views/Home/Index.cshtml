@@ -100,7 +100,7 @@
                             }
                         </td>
                         <td>
-                            @if (item.IdUser.ToString() != User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value && ViewBag.IsValidated == true && !User.IsInRole("Admin"))
+                            @if (item.IdUser.ToString() != User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value && ViewBag.IsValidated == true && !User.IsInRole("Admin") && item.Active == true)
                             {
                                 <form asp-controller="Transactions" asp-action="CreateTransaction" method="post" class="d-inline">
                                     @Html.AntiForgeryToken()
