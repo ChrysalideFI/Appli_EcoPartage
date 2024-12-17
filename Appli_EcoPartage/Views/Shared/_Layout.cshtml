@@ -24,7 +24,7 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        @if ((ViewBag.IsValidated != null && ViewBag.IsValidated == true) || !User.IsInRole("Admin")){
+                        @if (ViewBag.IsValidated != null && ViewBag.IsValidated == true && !User.IsInRole("Admin")){
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Profile">Profile</a>
                             </li>

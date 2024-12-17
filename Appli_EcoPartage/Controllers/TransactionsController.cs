@@ -195,7 +195,7 @@ namespace Appli_EcoPartage.Controllers
             }
 
             TempData["Success"] = "Transaction processed successfully.";
-            return RedirectToAction("Details", "Transactions");
+            return RedirectToAction("Details", "Transactions", new { id = transaction.IdTransaction });
         }
 
         [Authorize]
@@ -243,7 +243,7 @@ namespace Appli_EcoPartage.Controllers
             }
 
             TempData["Success"] = "Transaction completed successfully.";
-            return RedirectToAction("Details", "Transactions");
+            return RedirectToAction("Details", "Transactions", new { id = transaction.IdTransaction });
         }
     }
 }
