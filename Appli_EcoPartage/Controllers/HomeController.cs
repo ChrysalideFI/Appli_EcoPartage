@@ -65,7 +65,6 @@ namespace Appli_EcoPartage.Controllers
         }
 
         // GET: Annonces/Details/5
-        [Authorize]
         public async Task<IActionResult> Details(int? id)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
