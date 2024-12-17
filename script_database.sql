@@ -42,10 +42,10 @@ insert into GeographicalSectors (Place) values ('Nantes');
 insert into GeographicalSectors (Place) values ('Lille');
 
 --Table Annonce
-insert into Annonces (Titre, Description, Points, Date, Active, IdUser) values ('Housework', 'I need help with housework', 10, GETDATE(), 'True', 2);
-insert into Annonces (Titre, Description, Points, Date, Active, IdUser) values ('Gardening', 'I need help with gardening', 10, GETDATE(), 'True', 3);
-insert into Annonces (Titre, Description, Points, Date, Active, IdUser) values ('Cooking', 'I need help with cooking', 10, GETDATE(), 'True', 4);
-insert into Annonces (Titre, Description, Points, Date, Active, IdUser) values ('DIY', 'I need help with DIY', 10, GETDATE(), 'True', 5);
+insert into Annonces (Titre, Description, Points, Date, Active, IdUser) values ('Housework', 'I can help with housework', 10, GETDATE(), 'True', 2);
+insert into Annonces (Titre, Description, Points, Date, Active, IdUser) values ('Gardening', 'I can help with gardening', 10, GETDATE(), 'True', 3);
+insert into Annonces (Titre, Description, Points, Date, Active, IdUser) values ('Cooking', 'I can help with cooking', 10, GETDATE(), 'True', 4);
+insert into Annonces (Titre, Description, Points, Date, Active, IdUser) values ('DIY', 'I can help with DIY', 10, GETDATE(), 'True', 5);
 
 --Table AnnoncesTags
 insert into AnnoncesTags (IdTag, IdAnnonce) values (1, 1);
@@ -73,10 +73,10 @@ insert into Comments (Date, Notice, IdUserGiven, IdUserRecipient) values (GETDAT
 insert into Comments (Date, Notice, IdUserGiven, IdUserRecipient) values (GETDATE()+5, 'Good job', 4, 5);
 
 --Table ContactMessages
-insert into ContactMessages (Subject, Message, DateSent, IsRead, UserId) values ('Hello', 'Hello, I need help', GETDATE(), 'False', 1);
-insert into ContactMessages (Subject, Message, DateSent, IsRead, UserId) values ('Hello', 'Hello, I need help', GETDATE(), 'False', 2);
-insert into ContactMessages (Subject, Message, DateSent, IsRead, UserId) values ('Hello', 'Hello, I need help', GETDATE(), 'False', 3);
-insert into ContactMessages (Subject, Message, DateSent, IsRead, UserId) values ('Hello', 'Hello, I need help', GETDATE(), 'False', 4);
+insert into ContactMessages (Subject, Message, DateSent, IsRead, UserId) values ('Inscription', 'Hello, I need help with my inscription', GETDATE(), 'False', 1);
+insert into ContactMessages (Subject, Message, DateSent, IsRead, UserId) values ('Trade problem', 'Hello, I need help with the trade', GETDATE(), 'False', 2);
+insert into ContactMessages (Subject, Message, DateSent, IsRead, UserId) values ('Help', 'Hello, I need help with...', GETDATE(), 'False', 3);
+insert into ContactMessages (Subject, Message, DateSent, IsRead, UserId) values ('Help', 'Hello, I need help with ...', GETDATE(), 'False', 4);
 
 
 
