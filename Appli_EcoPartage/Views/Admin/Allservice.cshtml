@@ -6,6 +6,7 @@
 
 <h1>All Annonces</h1>
 
+<!-- formulaire pour afficher les annonces -->
 <table class="table">
     <thead>
         <tr>
@@ -22,6 +23,7 @@
                 <td>@annonce.Titre</td>
                 <td>@annonce.Description</td>
                 <td>@annonce.Points</td>
+                <!-- boutton pour changer les points d'une annonce' -->
                 <td>
                     <a asp-action="EditServicePoints" asp-route-id="@annonce.IdAnnonce" class="btn btn-primary">Edit Points</a>
                 </td>

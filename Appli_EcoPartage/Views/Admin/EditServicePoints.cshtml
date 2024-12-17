@@ -6,19 +6,24 @@
 
 <h1>Edit Annonce Points</h1>
 
+<!-- Section pour éditer les points d'une annonce -->
 <h4>Annonce</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
+        <!-- Formulaire pour éditer les points d'une annonce -->
         <form asp-action="EditServicePoints">
             <div class="form-group">
+                <!-- Champ pour éditer les points de l'annonce -->
                 <label asp-for="Points" class="control-label"></label>
                 <input asp-for="Points" class="form-control" />
                 <span asp-validation-for="Points" class="text-danger"></span>
 
             </div>
+            <!-- Champ caché pour l'identifiant de l'annonce -->
             <input type="hidden" asp-for="IdAnnonce" />
             <div class="form-group">
+                <!-- Bouton pour soumettre le formulaire -->
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>

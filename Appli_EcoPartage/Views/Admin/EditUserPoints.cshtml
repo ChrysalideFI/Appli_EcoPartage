@@ -6,8 +6,10 @@
 
 <h1>Edit User Points</h1>
 
+
 <h4>User</h4>
 <hr />
+<!-- Section pour éditer les points d'un utilisateur -->
 <div class="row">
     <div class="col-md-4">
         <form asp-action="EditUserPoints">
@@ -16,8 +18,10 @@
                 <input asp-for="Points" class="form-control" />
                 <span asp-validation-for="Points" class="text-danger"></span>
             </div>
+            <!-- Champ caché pour l'identifiant de l'utilisateur -->
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
+                <!-- Bouton pour soumettre le formulaire -->
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>
@@ -30,6 +34,7 @@
 
 @section Scripts {
     @{
+        // Inclut les scripts de validation
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }

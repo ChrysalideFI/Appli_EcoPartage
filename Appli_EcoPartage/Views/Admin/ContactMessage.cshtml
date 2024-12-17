@@ -6,6 +6,7 @@
 
 <h1>Contact Messages</h1>
 
+<!--Formulaire pour afficher les messages reçu par l'admin-->
 <table class="table">
     <thead>
         <tr>
@@ -29,6 +30,7 @@
                 <td>
                     @if (!message.IsRead)
                     {
+                        <!-- bouton pour changer le status d'un message reçu -->
                         <form asp-action="MarkAsRead" method="post" class="d-inline">
                             @Html.AntiForgeryToken()
                             <input type="hidden" name="id" value="@message.Id" />

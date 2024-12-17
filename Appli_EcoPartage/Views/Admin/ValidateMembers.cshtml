@@ -6,6 +6,7 @@
 
 <h1>Validate Users</h1>
 
+<!-- Formulaire pour afficher la liste des utilisateurs à valider -->
 <table class="table">
     <thead>
         <tr>
@@ -15,6 +16,7 @@
         </tr>
     </thead>
     <tbody>
+        <!-- Boucle pour parcourir chaque utilisateur dans le modèle -
         @foreach (var member in Model)
         {
             <tr>
@@ -23,6 +25,7 @@
                 <td>
                     <form asp-action="ApproveMember" method="post">
                         <input type="hidden" name="memberId" value="@member.Id" />
+                           <!-- Bouton pour soumettre le formulaire et approuver l'utilisateur --!>
                         <button type="submit" class="btn btn-success">Approve</button>
                     </form>
                 </td>
