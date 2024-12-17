@@ -35,17 +35,21 @@ namespace Appli_EcoPartage.Controllers
             }
 
             ViewBag.CurrentFilter = searchString;
-            var annonces = from a in _dbContext.Annonces
+            var annonces = _dbContext.Annonces
                       .Include(a => a.User)
                       .Include(a => a.AnnoncesTags)
                           .ThenInclude(at => at.Tag)
-                           select a;
+                      .Include(a => a.AnnoncesGeoSectors)
+                          .ThenInclude(ags => ags.GeographicalSector)
+                          .AsQueryable();
+
 
             if (!String.IsNullOrEmpty(searchString))
             {
                 annonces = annonces.Where(a => a.Titre.Contains(searchString) ||
                                                a.Description.Contains(searchString) ||
-                                               a.AnnoncesTags.Any(at => at.Tag.CategoryName.Contains(searchString)));
+                                               a.AnnoncesTags.Any(at => at.Tag.CategoryName.Contains(searchString)) ||
+                                               a.AnnoncesGeoSectors.Any(ags => ags.GeographicalSector.Place.Contains(searchString)));
             }
             // Trie par date de publication et sélectionne les tois dernières annonces postées
             annonces = annonces.OrderByDescending(a => a.Date).Take(3);

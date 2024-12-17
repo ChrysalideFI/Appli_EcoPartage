@@ -26,6 +26,11 @@ namespace Appli_EcoPartage.Data
         public required virtual ICollection<AnnoncesTags> AnnoncesTags { get; set; } = new List<AnnoncesTags>();
 
         public required virtual ICollection<AnnoncesGeoSector> AnnoncesGeoSectors { get; set; } = new List<AnnoncesGeoSector>();
+
+        internal object Include(Func<object, object> value)
+        {
+            throw new NotImplementedException();
+        }
     }
 
 }
