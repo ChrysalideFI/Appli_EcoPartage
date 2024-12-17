@@ -15,7 +15,7 @@ Cloner le projet https://github.com/Lukkiii/Appli_EcoPartage.git
 
 Lancer program.cs
 
-Lancer le script à la racine du projet.
+Lancer le script nommé "script_database.sql".
 
 Cliquer sur le bouton "https" pour lancer l'application.
 
