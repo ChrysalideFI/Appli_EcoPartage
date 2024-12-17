@@ -1,4 +1,4 @@
-﻿@model Appli_EcoPartage.Data.ContactMessage
+﻿@model Appli_EcoPartage.Models.ContactViewModel
 
 @{
     ViewData["Title"] = "Contact Us";
@@ -15,23 +15,26 @@
 
 <form asp-action="Contact" method="post">
     <div class="form-group">
-        <label asp-for="Subject" class="control-label"></label>
-        <input asp-for="Subject" class="form-control" />
-        <span asp-validation-for="Subject" class="text-danger"></span>
+        <label asp-for="ContactMessage.Subject" class="control-label"></label>
+        <input asp-for="ContactMessage.Subject" class="form-control" />
+        <span asp-validation-for="ContactMessage.Subject" class="text-danger"></span>
     </div>
     <div class="form-group">
-        <label asp-for="Message" class="control-label"></label>
-        <textarea asp-for="Message" class="form-control"></textarea>
-        <span asp-validation-for="Message" class="text-danger"></span>
+        <label asp-for="ContactMessage.Message" class="control-label"></label>
+        <textarea asp-for="ContactMessage.Message" class="form-control"></textarea>
+        <span asp-validation-for="ContactMessage.Message" class="text-danger"></span>
     </div>
     <div class="form-group">
         <input type="submit" value="Send" class="btn btn-primary" />
     </div>
 </form>
 
+<div id="userContactMessages">
+    @await Html.PartialAsync("_UserContactMessagesPartial", Model.ContactMessages)
+</div>
+
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }
-

@@ -403,7 +403,13 @@ namespace Appli_EcoPartage.Controllers
         [HttpGet]
         public IActionResult Contact()
         {
-            return View();
+            var contactMessages = _dbContext.ContactMessages.ToList(); // Récupère les messages de contact depuis la base de données
+            var model = new ContactViewModel
+            {
+                ContactMessage = new ContactMessage(),
+                ContactMessages = contactMessages
+            };
+            return View(model);
         }
 
         // POST: Contact
@@ -427,6 +433,17 @@ namespace Appli_EcoPartage.Controllers
             ViewBag.Message = "Your message has been sent successfully.";
 
             return View(contactMessage);
+        }
+
+        // GET: Home/UserContactMessages
+        [Authorize]
+        public async Task<IActionResult> UserContactMessages()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var messages = await _dbContext.ContactMessages
+                .Where(cm => cm.UserId == int.Parse(userId))
+                .ToListAsync();
+            return PartialView("_UserContactMessagesPartial", messages);
         }
 
 

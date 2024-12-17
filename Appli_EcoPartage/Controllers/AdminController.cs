@@ -153,5 +153,19 @@ namespace Appli_EcoPartage.Controllers
             var messages = await _DBcontext.ContactMessages.Include(cm => cm.User).ToListAsync();
             return View(messages);
         }
+
+        // POST: AdminController/MarkAsRead/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> MarkAsRead(int id)
+        {
+            var message = await _DBcontext.ContactMessages.FindAsync(id);
+            if (message != null)
+            {
+                message.IsRead = true;
+                await _DBcontext.SaveChangesAsync();
+            }
+            return RedirectToAction(nameof(ContactMessage));
+        }
     }
 }

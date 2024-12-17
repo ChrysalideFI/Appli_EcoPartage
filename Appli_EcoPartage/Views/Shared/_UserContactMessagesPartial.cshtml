@@ -1,0 +1,43 @@
+﻿@model IEnumerable<Appli_EcoPartage.Data.ContactMessage>
+
+<h2>Your Contact Messages</h2>
+
+@if (Model != null)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Subject</th>
+                <th>Message</th>
+                <th>Date Sent</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var message in Model)
+            {
+                <tr>
+                    <td>@message.Subject</td>
+                    <td>@message.Message</td>
+                    <td>@message.DateSent.ToString("yyyy-MM-dd HH:mm")</td>
+                    <td>
+                        @if (message.IsRead)
+                        {
+                            <span class="badge bg-success">Read</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-warning">Unread</span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No contact messages available.</p>
+}
+
+

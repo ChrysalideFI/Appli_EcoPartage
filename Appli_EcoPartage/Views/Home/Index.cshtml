@@ -84,7 +84,7 @@
                     </td>
                     <td>
                         <a asp-action="Details" asp-route-id="@item.IdAnnonce">Details</a>
-                        @if (item.IdUser.ToString() == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value)
+                        @if (item.IdUser.ToString() == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value || User.IsInRole("Admin"))
                         {
                             <a asp-action="Edit" asp-route-id="@item.IdAnnonce">Edit</a>
                             <a asp-action="Delete" asp-route-id="@item.IdAnnonce">Delete</a>

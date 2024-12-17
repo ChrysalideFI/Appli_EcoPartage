@@ -14,6 +14,7 @@
             <th>Date Sent</th>
             <th>User</th>
             <th>Status</th>
+            <th>Action</th>
         </tr>
     </thead>
     <tbody>
@@ -25,6 +26,20 @@
                 <td>@message.DateSent.ToString("yyyy-MM-dd HH:mm")</td>
                 <td>@message.User.UserName</td>
                 <td>@(message.IsRead ? "Read" : "Unread")</td>
+                <td>
+                    @if (!message.IsRead)
+                    {
+                        <form asp-action="MarkAsRead" method="post" class="d-inline">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@message.Id" />
+                            <button type="submit" class="btn btn-success">Mark as Read</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <span class="badge bg-success">Read</span>
+                    }
+                </td>
             </tr>
         }
     </tbody>
