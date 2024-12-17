@@ -53,7 +53,15 @@ namespace Appli_EcoPartage.Controllers
             // Trie par date de publication et sélectionne les tois dernières annonces postées
             annonces = annonces.OrderByDescending(a => a.Date).Take(3);
 
-            return View(await annonces.ToListAsync());
+            var annoncesList = await annonces.ToListAsync();
+
+            if (!annoncesList.Any())
+            {
+                ViewBag.Message = "Aucune annonce ne correspond à votre recherche";
+            }
+
+            return View(annoncesList);
+
         }
 
         // GET: Annonces/Details/5
