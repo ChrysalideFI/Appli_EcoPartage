@@ -17,11 +17,10 @@ namespace Appli_EcoPartage.Data
         public DateTime DateSent { get; set; } = DateTime.Now;
         public bool IsRead { get; set; } = false;
 
-        // Foreign key for Users
+        // utilisateur qui a envoyé le message
         [ForeignKey("User")]
         public int UserId { get; set; }
 
-        // Navigation property
         public virtual Users User { get; set; }
     }
 }

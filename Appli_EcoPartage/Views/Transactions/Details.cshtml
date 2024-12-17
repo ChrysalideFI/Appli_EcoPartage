@@ -6,14 +6,15 @@
 
 <div class="container mt-4">
     <h1>Transaction Details</h1>
-
+    <!-- Affiche un message d'erreur si une erreur de transaction est présente -->
     @if (TempData["TransactionError"] != null)
     {
-        <div class="alert alert-danger">
-            @TempData["TransactionError"]
-        </div>
+    <div class="alert alert-danger">
+        @TempData["TransactionError"]
+    </div>
     }
 
+    <!-- Tableau des détails de la transaction -->
     <table class="table table-bordered">
         <tbody>
             <tr>
@@ -37,19 +38,19 @@
                 <td>
                     @if (Model.Status == "Pending")
                     {
-                        <span class="badge bg-warning">Pending</span>
+                    <span class="badge bg-warning">Pending</span>
                     }
                     else if (Model.Status == "In Progress")
                     {
-                        <span class="badge bg-success">In Progress</span>
+                    <span class="badge bg-success">In Progress</span>
                     }
                     else if (Model.Status == "Declined")
                     {
-                        <span class="badge bg-danger">Declined</span>
+                    <span class="badge bg-danger">Declined</span>
                     }
                     else if (Model.Status == "Completed")
                     {
-                        <span class="badge bg-primary">Completed</span>
+                    <span class="badge bg-primary">Completed</span>
                     }
                 </td>
             </tr>
@@ -59,49 +60,51 @@
             </tr>
         </tbody>
     </table>
-
+    <!-- Affiche le statut de la transaction avec des badges colorés -->
     @if (Model.Status == "Pending" && Model.UserIdSeller.ToString() == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value)
     {
-        <h3>Process Transaction</h3>
-        <form asp-controller="Transactions" asp-action="ProcessTransaction" method="post">
-            @Html.AntiForgeryToken()
-            <input type="hidden" name="id" value="@Model.IdTransaction" />
-            <button type="submit" name="action" value="Accept" class="btn btn-success">Accept</button>
-            <button type="submit" name="action" value="Decline" class="btn btn-danger">Decline</button>
-        </form>
+    <h3>Process Transaction</h3>
+    <form asp-controller="Transactions" asp-action="ProcessTransaction" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="id" value="@Model.IdTransaction" />
+        <button type="submit" name="action" value="Accept" class="btn btn-success">Accept</button>
+        <button type="submit" name="action" value="Decline" class="btn btn-danger">Decline</button>
+    </form>
     }
     else if (Model.Status == "Pending")
     {
-        <p class="text-muted">This transaction is pending and waiting for the seller's decision.</p>
+    <p class="text-muted">This transaction is pending and waiting for the seller's decision.</p>
     }
     else
     {
-        <p class="text-muted">This transaction has been processed.</p>
+    <p class="text-muted">This transaction has been processed.</p>
     }
 
     @if (Model.Status == "In Progress" && Model.UserIdBuyer.ToString() == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value)
     {
-        <form asp-action="CompleteTransaction" method="post">
-            @Html.AntiForgeryToken()
-            <input type="hidden" name="id" value="@Model.IdTransaction" />
-            <button type="submit" class="btn btn-primary">Complete Transaction</button>
-        </form>
+    <form asp-action="CompleteTransaction" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="id" value="@Model.IdTransaction" />
+        <button type="submit" class="btn btn-primary">Complete Transaction</button>
+    </form>
     }
 
+    <!-- Formulaire pour ajouter un commentaire si la transaction est terminée et que l'utilisateur est l'acheteur -->
     @if (Model.Status == "Completed" && Model.UserIdBuyer.ToString() == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value)
     {
-        <form asp-controller="Profile" asp-action="AddComment" method="post">
-            @Html.AntiForgeryToken()
-            <input type="hidden" name="RecipientId" value="@Model.UserIdSeller" />
-            <div class="form-group">
-                <label for="Notice">Comment</label>
-                <textarea name="Notice" class="form-control" required></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary">Submit Comment</button>
-        </form>
+    <form asp-controller="Profile" asp-action="AddComment" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="RecipientId" value="@Model.UserIdSeller" />
+        <div class="form-group">
+            <label for="Notice">Comment</label>
+            <textarea name="Notice" class="form-control" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit Comment</button>
+    </form>
     }
 </div>
 
+<!-- Lien pour retourner à la liste des transactions -->
 <div>
     <a asp-action="Index">Back to List</a>
 </div>

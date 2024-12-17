@@ -6,29 +6,35 @@
 
 <h1>Contact Us</h1>
 
+<!--affichage du message d'information-->
 @if (ViewBag.Message != null)
 {
-    <div class="alert alert-info">
-        @ViewBag.Message
-    </div>
+<div class="alert alert-info">
+    @ViewBag.Message
+</div>
 }
 
+<!-- Formulaire de contact -->
 <form asp-action="Contact" method="post">
+    <!-- Objet du message-->
     <div class="form-group">
         <label asp-for="ContactMessage.Subject" class="control-label"></label>
         <input asp-for="ContactMessage.Subject" class="form-control" />
         <span asp-validation-for="ContactMessage.Subject" class="text-danger"></span>
     </div>
+    <!-- Contenu du message -->
     <div class="form-group">
         <label asp-for="ContactMessage.Message" class="control-label"></label>
         <textarea asp-for="ContactMessage.Message" class="form-control"></textarea>
         <span asp-validation-for="ContactMessage.Message" class="text-danger"></span>
     </div>
+    <!-- Bouton pour soumettre le formulaire -->
     <div class="form-group">
         <input type="submit" value="Send" class="btn btn-primary" />
     </div>
 </form>
 
+<!-- Affiche les messages de contact de l'utilisateur -->
 <div id="userContactMessages">
     @await Html.PartialAsync("_UserContactMessagesPartial", Model.ContactMessages)
 </div>
