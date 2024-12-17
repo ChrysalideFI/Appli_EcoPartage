@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System.Security.Claims;
 
 namespace Appli_EcoPartage.Controllers
 {
@@ -20,6 +21,15 @@ namespace Appli_EcoPartage.Controllers
         [Authorize]
         public async Task<IActionResult> Index()
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId != null)
+            {
+                var user = _context.Users.Find(int.Parse(userId));
+                if (user != null)
+                {
+                    ViewBag.IsValidated = user.IsValidated;
+                }
+            }
             var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
 
             if (string.IsNullOrEmpty(currentUserId))
@@ -40,6 +50,16 @@ namespace Appli_EcoPartage.Controllers
         [Authorize]
         public async Task<IActionResult> Details(int? id)
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId != null)
+            {
+                var user = _context.Users.Find(int.Parse(userId));
+                if (user != null)
+                {
+                    ViewBag.IsValidated = user.IsValidated;
+                }
+            }
+
             var transaction = await _context.Transactions
                 .Include(t => t.UserBuyer)
                 .Include(t => t.UserSeller)
@@ -155,9 +175,6 @@ namespace Appli_EcoPartage.Controllers
                         TempData["TransactionError"] = "Buyer's points are insufficient to complete the transaction.";
                         return RedirectToAction("Details", "Transactions", new { id = transaction.IdTransaction });
                     }
-
-                    /*transaction.UserBuyer.Points -= transaction.Annonce.Points;
-                    transaction.UserSeller.Points += transaction.Annonce.Points;*/
                     transaction.Status = "In Progress";
                 }
                 else if (action == "Decline")

@@ -57,6 +57,16 @@ namespace Appli_EcoPartage.Controllers
         [Authorize]
         public async Task<IActionResult> Details(int? id)
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId != null)
+            {
+                var user = _dbContext.Users.Find(int.Parse(userId));
+                if (user != null)
+                {
+                    ViewBag.IsValidated = user.IsValidated;
+                }
+            }
+
             if (id == null)
             {
                 return NotFound();
@@ -82,6 +92,16 @@ namespace Appli_EcoPartage.Controllers
         [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId != null)
+            {
+                var user = _dbContext.Users.Find(int.Parse(userId));
+                if (user != null)
+                {
+                    ViewBag.IsValidated = user.IsValidated;
+                }
+            }
+
             if (id == null)
             {
                 return NotFound();
@@ -100,7 +120,7 @@ namespace Appli_EcoPartage.Controllers
             }
 
             var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-            if (currentUserId == null || annonces.IdUser.ToString() != currentUserId)
+            if (currentUserId == null || (annonces.IdUser.ToString() != currentUserId && !User.IsInRole("Admin")))
             {
                 return RedirectToAction("AccessDenied");
             }
@@ -137,7 +157,7 @@ namespace Appli_EcoPartage.Controllers
 
                     var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
                     var existingAnnonce = await _dbContext.Annonces.AsNoTracking().FirstOrDefaultAsync(a => a.IdAnnonce == id);
-                    if (existingAnnonce == null || currentUserId == null || existingAnnonce.IdUser.ToString() != currentUserId)
+                    if (existingAnnonce == null || currentUserId == null || (existingAnnonce.IdUser.ToString() != currentUserId && !User.IsInRole("Admin")))
                     {
                         return RedirectToAction("AccessDenied");
                     }
@@ -203,6 +223,16 @@ namespace Appli_EcoPartage.Controllers
         [Authorize]
         public async Task<IActionResult> Delete(int? id)
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId != null)
+            {
+                var user = _dbContext.Users.Find(int.Parse(userId));
+                if (user != null)
+                {
+                    ViewBag.IsValidated = user.IsValidated;
+                }
+            }
+
             if (id == null)
             {
                 return NotFound();
@@ -221,7 +251,7 @@ namespace Appli_EcoPartage.Controllers
             }
 
             var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-            if (currentUserId == null || annonces.IdUser.ToString() != currentUserId)
+            if (currentUserId == null || (annonces.IdUser.ToString() != currentUserId && !User.IsInRole("Admin")))
             {
                 return RedirectToAction("AccessDenied");
             }
@@ -242,7 +272,7 @@ namespace Appli_EcoPartage.Controllers
 
             var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
             var existingAnnonce = await _dbContext.Annonces.AsNoTracking().FirstOrDefaultAsync(a => a.IdAnnonce == id);
-            if (existingAnnonce == null || currentUserId == null || existingAnnonce.IdUser.ToString() != currentUserId)
+            if (existingAnnonce == null || currentUserId == null || (existingAnnonce.IdUser.ToString() != currentUserId && !User.IsInRole("Admin")))
             {
                 return RedirectToAction("AccessDenied");
             }
@@ -274,12 +304,20 @@ namespace Appli_EcoPartage.Controllers
         [Authorize]
         public IActionResult Profile(int page = 1, int pageSize = 10)
         {
-            var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
+            var userIdClaim = User.FindFirstValue(System.Security.Claims.ClaimTypes.NameIdentifier);
             if (userIdClaim == null)
             {
                 return RedirectToAction("Error");
             }
-            var userId = int.Parse(userIdClaim.Value);
+            else
+            {
+                var userFound = _dbContext.Users.Find(int.Parse(userIdClaim));
+                if (userFound != null)
+                {
+                    ViewBag.IsValidated = userFound.IsValidated;
+                }
+            }
+            var userId = int.Parse(userIdClaim);
 
             var user = _dbContext.Users
                 .Include(u => u.CommentsRecived)
@@ -401,8 +439,18 @@ namespace Appli_EcoPartage.Controllers
 
         // GET: Contact
         [HttpGet]
+        [Authorize]
         public IActionResult Contact()
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId != null)
+            {
+                var user = _dbContext.Users.Find(int.Parse(userId));
+                if (user != null)
+                {
+                    ViewBag.IsValidated = user.IsValidated;
+                }
+            }
             var contactMessages = _dbContext.ContactMessages.ToList(); // Récupère les messages de contact depuis la base de données
             var model = new ContactViewModel
             {

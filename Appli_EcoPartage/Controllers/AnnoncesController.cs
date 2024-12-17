@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Appli_EcoPartage.Data;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace Appli_EcoPartage.Controllers
 {
@@ -23,6 +24,15 @@ namespace Appli_EcoPartage.Controllers
         [Authorize]
         public IActionResult Index()
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId != null)
+            {
+                var user = _context.Users.Find(int.Parse(userId));
+                if (user != null)
+                {
+                    ViewBag.IsValidated = user.IsValidated;
+                }
+            }
             return View();
         }
 
@@ -30,6 +40,15 @@ namespace Appli_EcoPartage.Controllers
         [Authorize]
         public IActionResult Create()
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId != null)
+            {
+                var user = _context.Users.Find(int.Parse(userId));
+                if (user != null)
+                {
+                    ViewBag.IsValidated = user.IsValidated;
+                }
+            }
             var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
 
             if (string.IsNullOrEmpty(currentUserId))
