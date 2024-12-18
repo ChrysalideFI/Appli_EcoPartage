@@ -1,21 +1,21 @@
 ﻿--if your database is not empty, you can use this code in comments to empty it
 
---TRUNCATE TABLE AnnoncesTags;
---TRUNCATE TABLE AnnoncesGeoSectors;
---TRUNCATE TABLE Comments;
---TRUNCATE TABLE Transactions;
---TRUNCATE TABLE ContactMessages;
---TRUNCATE TABLE AspNetUserRoles;
---DELETE FROM AspNetRoles;
---DBCC CHECKIDENT ('AspNetRoles', RESEED, 0);
---DELETE FROM Tags;
---DBCC CHECKIDENT ('Tags', RESEED, 0);
---DELETE FROM GeographicalSectors;
---DBCC CHECKIDENT ('GeographicalSectors', RESEED, 0);
---DELETE FROM Annonces;
---DBCC CHECKIDENT ('Annonces', RESEED, 0);
---DELETE FROM AspNetUsers;
---DBCC CHECKIDENT ('AspNetUsers', RESEED, 0);
+TRUNCATE TABLE AnnoncesTags;
+TRUNCATE TABLE AnnoncesGeoSectors;
+TRUNCATE TABLE Comments;
+TRUNCATE TABLE Transactions;
+TRUNCATE TABLE ContactMessages;
+TRUNCATE TABLE AspNetUserRoles;
+DELETE FROM AspNetRoles;
+DBCC CHECKIDENT ('AspNetRoles', RESEED, 0);
+DELETE FROM Tags;
+DBCC CHECKIDENT ('Tags', RESEED, 0);
+DELETE FROM GeographicalSectors;
+DBCC CHECKIDENT ('GeographicalSectors', RESEED, 0);
+DELETE FROM Annonces;
+DBCC CHECKIDENT ('Annonces', RESEED, 0);
+DELETE FROM AspNetUsers;
+DBCC CHECKIDENT ('AspNetUsers', RESEED, 0);
 
 
 -- Table AspNetUsers
