@@ -34,6 +34,11 @@ using (var scope = app.Services.CreateScope())
         await roleManager.CreateAsync(new IdentityRole<int>("Admin"));
     }
 
+    if (!await roleManager.RoleExistsAsync("UserBlocked"))
+    {
+        await roleManager.CreateAsync(new IdentityRole<int>("UserBlocked"));
+    }
+
     // Create a default admin user if it doesn't exist
     var adminUser = await userManager.FindByEmailAsync("admin@example.com");
     if (adminUser == null)
@@ -56,14 +61,15 @@ using (var scope = app.Services.CreateScope())
     var defaultUser3 = await userManager.FindByEmailAsync("user3@test.com");
     var defaultUser4 = await userManager.FindByEmailAsync("user4@test.com");
     var defaultUser5 = await userManager.FindByEmailAsync("user5@test.com");
+    // Crée un utilisateur non validé par l'admin (donc n'ayant pas accès à tous le site)
     if (defaultUser1 == null)
     {
-        defaultUser1 = new Users { UserName = "user1@test.com", Email = "user1@test.com" };
-        await userManager.CreateAsync(defaultUser1, "UserPassword123!");
+        defaultUser1 = new Users { UserName = "user1@test.com", Email = "user1@test.com", IsValidated = false };
+    await userManager.CreateAsync(defaultUser1, "UserPassword123!");
     }
     if (defaultUser2 == null)
     {
-        defaultUser2 = new Users { UserName = "user2@test.com", Email = "user2@test.com" };
+        defaultUser2 = new Users { UserName = "user2@test.com", Email = "user2@test.com", IsValidated = true };
         await userManager.CreateAsync(defaultUser2, "UserPassword123!");
     }
     if (defaultUser3 == null)
