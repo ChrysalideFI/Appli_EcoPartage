@@ -1,6 +1,7 @@
 ﻿using Appli_EcoPartage.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -60,7 +61,7 @@ namespace Appli_EcoPartage.Controllers
         }
 
         // POST: AdminController/DeleteUser/id
-        // Admin can delete a user from the list
+        // Admin can change the role of a user to UserBlocked
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteUser(int id)
@@ -68,7 +69,10 @@ namespace Appli_EcoPartage.Controllers
             var user = await _DBcontext.Users.FindAsync(id);
             if (user != null)
             {
-                _DBcontext.Users.Remove(user);
+                var userManager = HttpContext.RequestServices.GetRequiredService<UserManager<Users>>();
+                var currentRoles = await userManager.GetRolesAsync(user);
+                await userManager.RemoveFromRolesAsync(user, currentRoles);
+                await userManager.AddToRoleAsync(user, "UserBlocked");
                 await _DBcontext.SaveChangesAsync();
             }
             return RedirectToAction(nameof(Alluser));
