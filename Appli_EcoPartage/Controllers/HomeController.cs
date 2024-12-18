@@ -300,6 +300,14 @@ namespace Appli_EcoPartage.Controllers
 
             var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
             var existingAnnonce = await _dbContext.Annonces.AsNoTracking().FirstOrDefaultAsync(a => a.IdAnnonce == id);
+
+            var existingtransaction = await _dbContext.Transactions.FirstOrDefaultAsync(t => t.IdAnnonce == id);
+            
+            if (existingtransaction != null ) {
+                ViewBag.Message = "You can't delete this annonce because it has already been traded";
+                return View("Delete", annonces);
+            }
+
             if (existingAnnonce == null || currentUserId == null || (existingAnnonce.IdUser.ToString() != currentUserId && !User.IsInRole("Admin")))
             {
                 return RedirectToAction("AccessDenied");

@@ -7,6 +7,13 @@
 <h1>Delete</h1>
 
 <h3>Are you sure you want to delete this?</h3>
+
+@if (ViewBag.Message != null)
+{
+    <div class="alert alert-danger">
+        @ViewBag.Message
+    </div>
+} else {
 <div>
     <h4>Annonces</h4>
     <hr />
@@ -78,3 +85,4 @@
         <a asp-action="Index">Back to List</a>
     </form>
 </div>
+}
