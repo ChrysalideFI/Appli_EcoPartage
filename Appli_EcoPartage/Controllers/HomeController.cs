@@ -293,6 +293,15 @@ namespace Appli_EcoPartage.Controllers
         [Authorize]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId != null)
+            {
+                var user = _dbContext.Users.Find(int.Parse(userId));
+                if (user != null)
+                {
+                    ViewBag.IsValidated = user.IsValidated;
+                }
+            }
             var annonces = await _dbContext.Annonces
                 .Include(a => a.AnnoncesTags)
                 .Include(a => a.AnnoncesGeoSectors)
@@ -304,7 +313,7 @@ namespace Appli_EcoPartage.Controllers
             var existingtransaction = await _dbContext.Transactions.FirstOrDefaultAsync(t => t.IdAnnonce == id);
             
             if (existingtransaction != null ) {
-                ViewBag.Message = "You can't delete this annonce because it has already been traded";
+                ViewBag.Message = "You can't delete this annonce because it has already been traded, but you can inactive your annonce.";
                 return View("Delete", annonces);
             }
 
