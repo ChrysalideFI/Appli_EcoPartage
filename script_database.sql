@@ -42,7 +42,7 @@ insert into GeographicalSectors (Place) values ('Nantes');
 insert into GeographicalSectors (Place) values ('Lille');
 
 --Table Annonce
-insert into Annonces (Titre, Description, Points, Date, Active, IdUser) values ('Housework', 'I can help with housework', 10, GETDATE(), 'True', 2);
+insert into Annonces (Titre, Description, Points, Date, Active, IdUser) values ('Housework', 'I can help with housework', 10000, GETDATE(), 'True', 2);
 insert into Annonces (Titre, Description, Points, Date, Active, IdUser) values ('Gardening', 'I can help with gardening', 10, GETDATE(), 'True', 3);
 insert into Annonces (Titre, Description, Points, Date, Active, IdUser) values ('Cooking', 'I can help with cooking', 10, GETDATE(), 'True', 4);
 insert into Annonces (Titre, Description, Points, Date, Active, IdUser) values ('DIY', 'I can help with DIY', 10, GETDATE(), 'True', 5);
