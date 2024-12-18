@@ -2,6 +2,14 @@
 
 <h1>Welcome, @Model.UserName!</h1>
 
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["ErrorMessage"]
+    </div>
+}
+
 <!-- Affiche l'email et les points de l'utilisateur -->
 <p><strong>Email:</strong> @Model.Email</p>
 <p><strong>Points:</strong> @Model.Points</p>

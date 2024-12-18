@@ -60,11 +60,11 @@ namespace Appli_EcoPartage.Controllers
             return RedirectToAction("ValidateMembers");
         }
 
-        // POST: AdminController/DeleteUser/id
+        // POST: AdminController/UserBlocked/id
         // Admin can change the role of a user to UserBlocked
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteUser(int id)
+        public async Task<IActionResult> UserBlocked(int id)
         {
             var user = await _DBcontext.Users.FindAsync(id);
             if (user != null)

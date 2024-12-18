@@ -30,10 +30,10 @@
                 </td>
                 <!-- boutton pour supprimer un utilisateur' -->
                 <td>
-                    <form asp-action="DeleteUser" method="post" class="d-inline">
+                    <form asp-action="UserBlocked" method="post" class="d-inline">
                         @Html.AntiForgeryToken()
                         <input type="hidden" name="id" value="@user.Id" />
-                        <button type="submit" class="btn btn-danger">Delete</button>
+                        <button type="submit" class="btn btn-danger">Block</button>
                     </form>
                 </td>
 

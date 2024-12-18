@@ -407,6 +407,11 @@ namespace Appli_EcoPartage.Controllers
             // Pagination
             ViewBag.TotalPages = (int)Math.Ceiling((double)totalComments / pageSize);
             ViewBag.CurrentPage = page;
+            if (User.IsInRole("UserBlocked"))
+            {
+                TempData["ErrorMessage"] = "Your account is blocked by admin, you can contact them.";
+            }
+            
 
             return View(viewModel);
         }

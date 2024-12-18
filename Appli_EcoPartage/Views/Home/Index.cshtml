@@ -27,7 +27,7 @@
 
     <div>
         <button id="AllAnnonces">All Annonces</button>
-        @if (User.Identity.IsAuthenticated && !User.IsInRole("Admin"))
+    @if (User.Identity.IsAuthenticated && !User.IsInRole("Admin") && !User.IsInRole("UserBlocked"))
     {
         <button id="MyAnnonces">My Annonces</button>
     }
@@ -95,14 +95,14 @@
                     </td>
                     <td>
                         <a asp-action="Details" asp-route-id="@item.IdAnnonce">Details</a>
-                        @if ((item.IdUser.ToString() == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value && item.User.IsValidated == true) || User.IsInRole("Admin"))
+                            @if ((item.IdUser.ToString() == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value && item.User.IsValidated == true && !User.IsInRole("UserBlocked")) || User.IsInRole("Admin"))
                             {
                         <a asp-action="Edit" asp-route-id="@item.IdAnnonce">Edit</a>
                         <a asp-action="Delete" asp-route-id="@item.IdAnnonce">Delete</a>
                             }
                     </td>
                     <td>
-                        @if (item.IdUser.ToString() != User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value && ViewBag.IsValidated == true && !User.IsInRole("Admin") && item.Active == true)
+                            @if (item.IdUser.ToString() != User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value && ViewBag.IsValidated == true && !User.IsInRole("Admin") && item.Active == true && !User.IsInRole("UserBlocked"))
                             {
                         <form asp-controller="Transactions" asp-action="CreateTransaction" method="post" class="d-inline">
                             @Html.AntiForgeryToken()

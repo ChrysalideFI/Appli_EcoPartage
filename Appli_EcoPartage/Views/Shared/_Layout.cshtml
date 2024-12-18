@@ -29,17 +29,21 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <!-- Liens pour les utilisateurs validés non administrateurs -->
-                        @if (ViewBag.IsValidated != null && ViewBag.IsValidated == true && !User.IsInRole("Admin")){
+                        @if (ViewBag.IsValidated != null && ViewBag.IsValidated == true && !User.IsInRole("Admin"))
+                        {
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Profile">Profil</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Annonces" asp-action="Index">Create Annonce</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Transactions" asp-action="Index">Transactions</a>
-                        </li>
-                            }
+                            @if (!User.IsInRole("UserBlocked"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Annonces" asp-action="Index">Create Annonce</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Transactions" asp-action="Index">Transactions</a>
+                                </li>
+                            } 
+                         }
                         <!-- Lien vers la page de contact pour tous les utilisateurs sauf les administrateurs -->
                         @if (!User.IsInRole("Admin"))
                             {
@@ -48,7 +52,7 @@
                         </li>
                             }
                         <!-- Liens pour les administrateurs -->
-                        @if (User.IsInRole("Admin"))
+                        @if (User.IsInRole("Admin") )
                             {
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="ValidateMembers">Validate Inscription</a>
